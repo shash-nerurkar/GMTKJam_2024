@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dde81f05d68c28d4f875d469d7e8f425, type: 3}
+  m_Name: DialogueSequenceData1
+  m_EditorClassIdentifier: 
+  openingDialogues:
+  - speaker: 0
+    text: Bhund saab, how are you? I am here to get a loan! *smiling deviously*
+  - speaker: 3
+    text: '*sniffs* Where did this stench come from?'
+  - speaker: 0
+    text: '*snarls at the peon* Stop farting, moron. Go get tea for us.'
+  - speaker: 3
+    text: Please do not order the help around. What do you want?
+  closingDialoguesOnWin:
+  - speaker: 0
+    text: '*With a teary eye and diminished self respect, gets up from his chair*'
+  - speaker: 3
+    text: '*smirks* Pleasure doing business with you, SuSu.'
+  closingDialoguesOnLose: []
