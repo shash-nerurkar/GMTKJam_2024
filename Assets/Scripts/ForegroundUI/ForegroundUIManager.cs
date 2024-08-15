@@ -24,7 +24,7 @@ public class ForegroundUIManager : MonoBehaviour
         GameManager.ShowTransitionAction -= transition.FadeIn;
     }
 
-    private void Start ( ) => Instantiate ( WIPDisplayPrefab, transform );
+    // private void Start ( ) => Instantiate ( WIPDisplayPrefab, transform );
 
     #endregion
 }
