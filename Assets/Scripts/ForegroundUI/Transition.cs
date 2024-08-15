@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,11 +21,9 @@ public class Transition : MonoBehaviour
         transitionImage.color = Constants.TransitionFadeOutColor;
 
         DOTween.To ( ( ) => transitionImage.color, x => transitionImage.color = x, Constants.TransitionFadeInColor, fadeInSpeedInSeconds )
-            .OnComplete ( async ( ) => 
+            .OnComplete ( ( ) => 
             {
                 onFadeInCompleteAction ( );
-
-                await Task.Delay ( 1000 );
                 
                 FadeOut ( fadeOutSpeedInSeconds );
             } );
@@ -36,7 +33,8 @@ public class Transition : MonoBehaviour
     {
         transitionImage.color = Constants.TransitionFadeInColor;
 
-        DOTween.To ( ( ) => transitionImage.color, x => transitionImage.color = x, Constants.TransitionFadeOutColor, speedInSeconds )
+        DOTween.To ( ( ) => transitionImage.color, x => transitionImage.color = x, Constants.TransitionFadeOutColor, speedInSeconds ) 
+            .SetDelay ( 1 ) 
             .OnComplete ( ( ) => 
             {
                 transitionImage.enabled = false;

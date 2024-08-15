@@ -6,6 +6,8 @@ public class ForegroundUIManager : MonoBehaviour
 
     [ SerializeField ] private Transition transition;
 
+    [ SerializeField ] private GameObject WIPDisplayPrefab;
+
     #endregion
 
     
@@ -21,6 +23,8 @@ public class ForegroundUIManager : MonoBehaviour
     {
         GameManager.ShowTransitionAction -= transition.FadeIn;
     }
+
+    private void Start ( ) => Instantiate ( WIPDisplayPrefab, transform );
 
     #endregion
 }

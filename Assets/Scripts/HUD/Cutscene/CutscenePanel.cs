@@ -1,6 +1,6 @@
 using System;
+using System.Collections;
 using System.Linq;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -63,14 +63,24 @@ public class CutscenePanel : MonoBehaviour
         return true;
     }
 
-    private async void ShowCurrentSegment ( ) 
+    private void ShowCurrentSegment ( ) 
     {
         backgroundImage.sprite = _currentSequenceData.Segments [ _currentSegmentIndex ].Image;
         narrationLabel.text = _currentSequenceData.Segments [ _currentSegmentIndex ].Text;
         
-        narrationTextFitter.enabled = false;
-        await Task.Delay ( 100 );
-        narrationTextFitter.enabled = true;
+        StartCoroutine ( SetTextPanelSize ( ) );
+
+        return;
+
+
+        IEnumerator SetTextPanelSize ( ) 
+        {
+            narrationTextFitter.enabled = false;
+
+            yield return new WaitForSeconds ( 0.1f );
+
+            narrationTextFitter.enabled = true;
+        }
     }
 
     #endregion
