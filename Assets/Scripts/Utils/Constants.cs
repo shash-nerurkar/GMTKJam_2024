@@ -28,15 +28,7 @@ public static class Constants
 public enum GameState 
 {
     MainMenu,
-    Cutscene,
     InGame
-}
-
-
-[ Serializable ]
-public enum Cutscene 
-{
-    Pilot,
 }
 
 
@@ -59,8 +51,8 @@ public enum InGameCharacter
 public enum SoundType
 {
     OnUIClicked,
-    OnDialoguePopped,
-    OnCutscenePopped
+    OnUIClicked2,
+    OnUIClicked3
 }
 
 
@@ -68,6 +60,5 @@ public enum SoundType
 public enum MusicType
 {
     MainMenu,
-    Cutscene,
     InGame
 }

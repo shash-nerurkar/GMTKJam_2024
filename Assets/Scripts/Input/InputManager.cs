@@ -36,19 +36,14 @@ public class InputManager : MonoBehaviour
         switch ( state ) 
         {
             case GameState.MainMenu:
-                _inputActionsDefault.Global.Disable ( );
-                _inputActionsDefault.InGame.Disable ( );
-
-                break;
-
-            case GameState.Cutscene:
                 _inputActionsDefault.Global.Enable ( );
                 _inputActionsDefault.InGame.Disable ( );
 
                 break;
 
             case GameState.InGame:
-                _inputActionsDefault.Global.Enable ( );
+                _inputActionsDefault.Global.Disable ( );
+                _inputActionsDefault.InGame.Enable ( );
 
                 break;
         }

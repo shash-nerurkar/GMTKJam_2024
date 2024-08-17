@@ -9,11 +9,7 @@ public class GameManager : MonoBehaviour
 
     public static event Action StopMainMenuMusicAction;
 
-    public static event Action<Cutscene> OnCutsceneStartAction;
-
     public static event Action<Level> OnLevelStartAction;
-
-    public static event Action<Level> StartBattleAction;
 
     public static event Action ClearLevelDataAction;
 
@@ -23,8 +19,6 @@ public class GameManager : MonoBehaviour
 
 
     #region Fields
-
-    private Cutscene _currentCutscene;
 
     private Level _currentLevel;
 
@@ -36,19 +30,11 @@ public class GameManager : MonoBehaviour
     private void Awake ( ) 
     {
         MainMenuPanel.OnStartGameButtonPressedAction += StartNewGame;
-
-        CutscenePanel.OnSequenceCompleteAction += OnCutsceneSequenceComplete;
-
-        DialogueBox.OnSequenceCompleteAction += OnDialogueSequenceComplete;
     }
 
     private void OnDestroy ( ) 
     {
         MainMenuPanel.OnStartGameButtonPressedAction -= StartNewGame;
-
-        CutscenePanel.OnSequenceCompleteAction -= OnCutsceneSequenceComplete;
-
-        DialogueBox.OnSequenceCompleteAction -= OnDialogueSequenceComplete;
     }
 
     private void Start ( ) => StartMainMenu ( fadeInSpeedInSeconds: 0f, fadeOutSpeedInSeconds: 1.5f );
@@ -56,30 +42,8 @@ public class GameManager : MonoBehaviour
     private void StartNewGame ( ) 
     {
         StopMainMenuMusicAction?.Invoke ( );
-        
-        StartCutscene ( Cutscene.Pilot );
     }
     
-    private void OnCutsceneSequenceComplete ( ) 
-    {
-        switch ( _currentCutscene ) 
-        {
-            case Cutscene.Pilot:
-
-                break;
-        }
-    }
-
-    private void OnDialogueSequenceComplete ( bool isOpeningSequence ) 
-    {
-        if ( isOpeningSequence ) 
-            StartBattleAction?.Invoke ( _currentLevel );
-        else 
-        {
-            ClearLevelDataAction?.Invoke ( );
-        }
-    }
-
     private void OnGameEnd ( Level level, bool didPlayerWin ) 
     {
         ClearLevelDataAction?.Invoke ( );
@@ -91,17 +55,6 @@ public class GameManager : MonoBehaviour
 
         ShowTransitionAction?.Invoke ( fadeInSpeedInSeconds, fadeOutSpeedInSeconds, ( ) => {
             GameStateManager.ChangeGameState ( GameState.MainMenu );
-        } );
-    }
-
-    private void StartCutscene ( Cutscene cutscene, float fadeInSpeedInSeconds = 1f, float fadeOutSpeedInSeconds = 1f ) 
-    {
-        ShowTransitionAction?.Invoke ( fadeInSpeedInSeconds, fadeOutSpeedInSeconds, ( ) => { 
-            _currentCutscene = cutscene;
-
-            GameStateManager.ChangeGameState ( GameState.Cutscene ); 
-
-            OnCutsceneStartAction?.Invoke ( cutscene );
         } );
     }
 

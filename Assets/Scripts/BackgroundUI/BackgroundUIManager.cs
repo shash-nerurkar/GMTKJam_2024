@@ -32,15 +32,10 @@ public class BackgroundUIManager : MonoBehaviour
         {
             case GameState.MainMenu:
                 
-
-                break;
-
-            case GameState.Cutscene:
-                backgroundImage.sprite = null;
-
                 break;
 
             case GameState.InGame:
+            
                 break;
         }
     }

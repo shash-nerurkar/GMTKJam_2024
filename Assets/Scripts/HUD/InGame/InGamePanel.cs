@@ -3,8 +3,6 @@ using UnityEngine;
 public class InGamePanel : MonoBehaviour
 {
     #region Fields
-
-    [ SerializeField ] private DialogueBox dialogueBox;
     
     #endregion
 
@@ -13,12 +11,10 @@ public class InGamePanel : MonoBehaviour
 
     private void Awake ( ) 
     {
-        DialogueManager.StartDialogueSequenceAction += dialogueBox.StartNewDialogueSequence;
     }
     
     private void OnDestroy ( ) 
     {
-        DialogueManager.StartDialogueSequenceAction -= dialogueBox.StartNewDialogueSequence;
     }
 
     #endregion

@@ -52,10 +52,6 @@ public class SoundManager : MonoBehaviour
 
     private void StopMainMenuMusic ( ) => Stop ( MusicType.MainMenu );
 
-    private void BeginCutsceneMusic ( ) => Play ( MusicType.Cutscene );
-
-    private void StopCutsceneMusic ( ) => Stop ( MusicType.Cutscene );
-
     private void BeginInGameMusic ( ) => Play ( MusicType.InGame );
 
     private void StopInGameMusic ( ) => Stop ( MusicType.InGame );

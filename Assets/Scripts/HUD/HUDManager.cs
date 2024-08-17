@@ -6,8 +6,6 @@ public class HUDManager : MonoBehaviour
 
     [ SerializeField ] private InGamePanel inGamePanel;
 
-    [ SerializeField ] private CutscenePanel cutscenePanel;
-
     [ SerializeField ] private MainMenuPanel mainMenuPanel;
 
     #endregion
@@ -18,15 +16,11 @@ public class HUDManager : MonoBehaviour
     private void Awake ( ) 
     {
         GameStateManager.OnGameStateChangeAction += OnGameStateChanged;
-
-        CutsceneManager.StartCutsceneAction += cutscenePanel.StartNewCutscene;
     }
     
     private void OnDestroy ( ) 
     {
         GameStateManager.OnGameStateChangeAction -= OnGameStateChanged;
-
-        CutsceneManager.StartCutsceneAction -= cutscenePanel.StartNewCutscene;
     }
 
     private void OnGameStateChanged ( GameState state ) 
@@ -36,26 +30,13 @@ public class HUDManager : MonoBehaviour
             case GameState.MainMenu:
                 mainMenuPanel.gameObject.SetActive ( true );
 
-                cutscenePanel.gameObject.SetActive ( false );
-
-                inGamePanel.gameObject.SetActive  ( false );
-
-                break;
-
-            case GameState.Cutscene:
-                mainMenuPanel.gameObject.SetActive ( false );
-
-                cutscenePanel.gameObject.SetActive ( true );
-
                 inGamePanel.gameObject.SetActive  ( false );
 
                 break;
 
             case GameState.InGame:
                 mainMenuPanel.gameObject.SetActive ( false );
-
-                cutscenePanel.gameObject.SetActive ( false );
-
+                
                 inGamePanel.gameObject.SetActive  ( true );
                 
                 break;
