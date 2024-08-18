@@ -13,8 +13,14 @@ public abstract class Audio
     [ Range ( .1f, 3f ) ] [ SerializeField ] private float pitch = 1f;
 
     [ SerializeField ] private bool isLoop;
+
+    private float _maxVolume;
     
     private AudioSource source;
+
+    public AudioSource Source => source;
+
+    public bool IsPlaying => source.isPlaying;
 
     #endregion
 
@@ -56,9 +62,17 @@ public abstract class Audio
             .OnComplete ( ( ) => Stop ( ) );
     }
 
+    public void Pause ( ) 
+    {
+        source.Pause ( );
+    }
+
+    public void AdjustVolume ( float fraction ) => source.volume = _maxVolume * fraction;
+
     private void SetSource ( ) 
     { 
         source.clip = clip;
+        _maxVolume = volume;
         source.volume = volume;
         source.pitch = pitch;
         source.loop = isLoop;

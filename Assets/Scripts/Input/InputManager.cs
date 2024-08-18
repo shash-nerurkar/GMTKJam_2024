@@ -1,9 +1,16 @@
+using System;
 using InputCustom;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    #region Actions
+    #region Action
+
+    public static event Action<int> ScaleSideSelectedAction;
+
+    public static event Action ScaleSideUnselectedAction;
+
+    public static event Action<int, int> ScalePlayerAction;
 
     #endregion
 
@@ -19,39 +26,41 @@ public class InputManager : MonoBehaviour
     
     private void Awake ( ) 
     {
-        GameStateManager.OnGameStateChangeAction += OnGameStateChange;
-        
         _inputActionsDefault = new InputActionsDefault();
         
-        SetupInGameActions ( );
+        GameManager.OnGameStartAction += EnableInGameActions;
+        GameManager.OnGameEndAction += DisableInGameActions;
+
+        HUDManager.OnPausePressedAction += DisableInGameActions;
+        HUDManager.OnResumePressedAction += EnableInGameActions;
     }
-    
+
     private void OnDestroy ( ) 
     {
-        GameStateManager.OnGameStateChangeAction -= OnGameStateChange;
+        GameManager.OnGameStartAction += EnableInGameActions;
+        GameManager.OnGameEndAction += DisableInGameActions;
+
+        HUDManager.OnPausePressedAction -= DisableInGameActions;
+        HUDManager.OnResumePressedAction -= EnableInGameActions;
     }
 
-    private void OnGameStateChange ( GameState state ) 
+    private void EnableInGameActions ( ) => _inputActionsDefault.InGame.Enable ( );
+
+    private void DisableInGameActions ( ) => _inputActionsDefault.InGame.Disable ( );
+
+    private void Start ( ) 
     {
-        switch ( state ) 
-        {
-            case GameState.MainMenu:
-                _inputActionsDefault.Global.Enable ( );
-                _inputActionsDefault.InGame.Disable ( );
-
-                break;
-
-            case GameState.InGame:
-                _inputActionsDefault.Global.Disable ( );
-                _inputActionsDefault.InGame.Enable ( );
-
-                break;
-        }
+        _inputActionsDefault.InGame.SetScaleSide.started += ctx => ScaleSideSelectedAction?.Invoke ( ( int ) ctx.ReadValue<float> ( ) );
+        _inputActionsDefault.InGame.SetScaleSide.canceled += ctx => ScaleSideUnselectedAction?.Invoke ( );
     }
 
-    private void SetupInGameActions ( ) 
+    private void Update ( ) 
     {
+        var scaleSide = _inputActionsDefault.InGame.SetScaleSide.ReadValue<float> ( );
+        var scaleDirection = _inputActionsDefault.InGame.SetScaleDirection.ReadValue<float> ( );
 
+        if ( scaleSide != 0 && scaleDirection != 0 ) 
+            ScalePlayerAction?.Invoke ( ( int ) scaleSide, ( int ) scaleDirection );
     }
 
     #endregion

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class Constants 
@@ -12,53 +13,42 @@ public static class Constants
     #endregion
 
 
-    #region Progress Bar
+    #region In-Game
 
-    public static readonly Color ProgressBarNegativeColor = new ( 1f, 0f, 0f );
+    public static readonly Vector2 InGameViewportVerticalRange = new ( -2.75f, 4.75f );
 
-    public static readonly Color ProgressBarPositiveColor = new ( 0f, 1f, 0f );
+    #endregion
 
-    public static readonly Color ProgressBarNeutralColor = new ( 1f, 1f, 1f );
+
+    #region Obstacle sounds
+
+    public static readonly Dictionary<float, SoundType> GapWidthToStinger = new ( ) { 
+        { 1.5f, SoundType.Stinger1 },
+        { 2.5f, SoundType.Stinger1 },
+        { 3.5f, SoundType.Stinger1 },
+        { 4.5f, SoundType.Stinger2 },
+        { 5.5f, SoundType.Stinger2 },
+        { 6.5f, SoundType.Stinger3 },
+        { 7.5f, SoundType.Stinger3 },
+    };
 
     #endregion
 }
 
 
 [ Serializable ]
-public enum GameState 
-{
-    MainMenu,
-    InGame
-}
-
-
-[ Serializable ]
-public enum Level 
-{
-    
-}
-
-
-[ Serializable ]
-public enum InGameCharacter 
-{
-    Player,
-    Enemy
-}
-
-
-[ Serializable ]
 public enum SoundType
 {
-    OnUIClicked,
-    OnUIClicked2,
-    OnUIClicked3
+    UIClicked,
+    Stinger1,
+    Stinger2,
+    Stinger3
 }
 
 
 [ Serializable ]
 public enum MusicType
 {
-    MainMenu,
-    InGame
+    InGame1Atmosphere,
+    InGame1Beat,
 }

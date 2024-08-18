@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Obstacle
   - 
   - 
   - 
@@ -44,6 +44,9 @@ TagManager:
   - name: Background UI
     uniqueID: 3523914701
     locked: 0
-  - name: HUD
+  - name: Entity
     uniqueID: 2057710369
+    locked: 0
+  - name: ForegroundUI
+    uniqueID: 2268769113
     locked: 0

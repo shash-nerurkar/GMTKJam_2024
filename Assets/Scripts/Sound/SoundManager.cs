@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    #region Actions
+
+    public static event Action<AudioSource> VisualizeTrackAction;
+
+    public static event Action StopVisualizingTrackAction;
+
+    #endregion
+
+
     #region Fields
 
     [ SerializeField ] private Sound [ ] sounds;
@@ -20,7 +29,6 @@ public class SoundManager : MonoBehaviour
 
     private void Awake ( ) 
     {
-
         if ( _instance != null && _instance != this ) 
             Destroy ( gameObject );
         else 
@@ -29,17 +37,44 @@ public class SoundManager : MonoBehaviour
         sounds.ToList ( ).ForEach ( sound => sound.Init ( gameObject.AddComponent<AudioSource> ( ) ) );
 
         musics.ToList ( ).ForEach ( music => music.Init ( gameObject.AddComponent<AudioSource> ( ) ) );
+
+        GameManager.OnGameStartAction += PlayMusic;
+        GameManager.OnGameEndAction += StopMusic;
+
+        HUDManager.OnPausePressedAction += PauseMusic;
+        HUDManager.OnResumePressedAction += ResumeMusic;
+        HUDManager.AdjustVolumeAAction += AdjustVolume;
     }
 
     private void OnDestroy ( ) 
     {
+        GameManager.OnGameStartAction -= PlayMusic;
+        GameManager.OnGameEndAction -= StopMusic;
 
+        HUDManager.OnPausePressedAction -= PauseMusic;
+        HUDManager.OnResumePressedAction -= ResumeMusic;
+        HUDManager.AdjustVolumeAAction -= AdjustVolume;
+    }
+
+    private void AdjustVolume ( float fraction ) 
+    {
+        foreach ( var sound in sounds ) 
+            sound.AdjustVolume ( fraction );
+            
+        foreach ( var music in musics ) 
+            music.AdjustVolume ( fraction );
     }
 
 
     #region Sound
 
-    public void Play ( SoundType type ) => Array.Find ( sounds, s => s.Type == type )?.Play ( );
+    public void Play ( SoundType type ) 
+    {
+        foreach ( var sound in sounds.Where ( s => s.IsPlaying ) ) 
+            sound.Stop ( );
+
+        Array.Find ( sounds, s => s.Type == type )?.Play ( );
+    }
 
     public void Stop ( SoundType type ) => Array.Find ( sounds, s => s.Type == type )?.Stop ( );
 
@@ -48,17 +83,46 @@ public class SoundManager : MonoBehaviour
     
     #region Music
 
-    private void BeginMainMenuMusic ( ) => Play ( MusicType.MainMenu );
+    private void PlayMusic ( ) 
+    {
+        Play ( MusicType.InGame1Atmosphere );
+        Play ( MusicType.InGame1Beat );
+        
+        VisualizeTrackAction?.Invoke ( GetTrackSource ( MusicType.InGame1Beat ) );
+    }
 
-    private void StopMainMenuMusic ( ) => Stop ( MusicType.MainMenu );
+    private void StopMusic ( ) 
+    {
+        Stop ( MusicType.InGame1Atmosphere );
+        Stop ( MusicType.InGame1Beat );
 
-    private void BeginInGameMusic ( ) => Play ( MusicType.InGame );
+        foreach ( var sound in sounds.Where ( s => s.IsPlaying ) ) 
+            sound.Stop ( );
 
-    private void StopInGameMusic ( ) => Stop ( MusicType.InGame );
+        StopVisualizingTrackAction?.Invoke ( );
+    }
+
+    private void PauseMusic ( ) 
+    {
+        Pause ( MusicType.InGame1Atmosphere );
+        Pause ( MusicType.InGame1Beat );
+    }
+
+    private void ResumeMusic ( ) 
+    {
+        Resume ( MusicType.InGame1Atmosphere );
+        Resume ( MusicType.InGame1Beat );
+    }
 
     private void Play ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.FadeInPlay ( );
 
-    private void Stop ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.FadeOutStop ( );
+    private void Resume ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Play ( );
+
+    private void Stop ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Stop ( );
+
+    private void Pause ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Pause ( );
+
+    private AudioSource GetTrackSource ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Source;
 
     #endregion
 

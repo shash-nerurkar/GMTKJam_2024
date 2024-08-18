@@ -26,70 +26,104 @@ namespace InputCustom
     ""name"": ""InputActionsDefault"",
     ""maps"": [
         {
-            ""name"": ""Global"",
-            ""id"": ""7ebb506e-93e7-486f-88f4-ec79dd81cbc6"",
-            ""actions"": [
-                {
-                    ""name"": ""GoNext"",
-                    ""type"": ""Button"",
-                    ""id"": ""652898f2-38b2-4a49-b9e3-141ca52630ed"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""89d9fde0-4cb2-4cd9-a7aa-ba9a1735d8ad"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""GoNext"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
             ""name"": ""InGame"",
             ""id"": ""ca76cf3d-c6b3-4c3f-9aee-7083f718fcee"",
             ""actions"": [
                 {
-                    ""name"": ""ClickCard"",
-                    ""type"": ""Button"",
-                    ""id"": ""063ac403-86ab-425d-bbec-52c92bb5a89c"",
-                    ""expectedControlType"": ""Button"",
+                    ""name"": ""SetScaleSide"",
+                    ""type"": ""Value"",
+                    ""id"": ""0175dacf-cc8c-496e-bf32-1958a72bab22"",
+                    ""expectedControlType"": ""Integer"",
                     ""processors"": """",
-                    ""interactions"": ""Hold"",
-                    ""initialStateCheck"": false
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SetScaleDirection"",
+                    ""type"": ""Value"",
+                    ""id"": ""063ac403-86ab-425d-bbec-52c92bb5a89c"",
+                    ""expectedControlType"": ""Integer"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""893cab9e-d687-4105-be1e-ec0384b09fb9"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""name"": ""1D Axis"",
+                    ""id"": ""48f6b44d-d15d-4ded-8947-3a018d7155ab"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ClickCard"",
-                    ""isComposite"": false,
+                    ""action"": ""SetScaleDirection"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""29ba9703-30ce-4b03-afcf-a3874dbb357a"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetScaleDirection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""1735b483-0dcf-4497-9ef0-16572403603a"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetScaleDirection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""41b92893-a000-410d-91b8-14bf0bba0755"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetScaleSide"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""c96a3af4-e39c-4fbe-bd09-4fb244c7aff9"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetScaleSide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""5d6ec33d-28f0-40d7-b1fc-48935191181c"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetScaleSide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-            // Global
-            m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
-            m_Global_GoNext = m_Global.FindAction("GoNext", throwIfNotFound: true);
             // InGame
             m_InGame = asset.FindActionMap("InGame", throwIfNotFound: true);
-            m_InGame_ClickCard = m_InGame.FindAction("ClickCard", throwIfNotFound: true);
+            m_InGame_SetScaleSide = m_InGame.FindAction("SetScaleSide", throwIfNotFound: true);
+            m_InGame_SetScaleDirection = m_InGame.FindAction("SetScaleDirection", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -148,61 +182,17 @@ namespace InputCustom
             return asset.FindBinding(bindingMask, out action);
         }
 
-        // Global
-        private readonly InputActionMap m_Global;
-        private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
-        private readonly InputAction m_Global_GoNext;
-        public struct GlobalActions
-        {
-            private @InputActionsDefault m_Wrapper;
-            public GlobalActions(@InputActionsDefault wrapper) { m_Wrapper = wrapper; }
-            public InputAction @GoNext => m_Wrapper.m_Global_GoNext;
-            public InputActionMap Get() { return m_Wrapper.m_Global; }
-            public void Enable() { Get().Enable(); }
-            public void Disable() { Get().Disable(); }
-            public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(GlobalActions set) { return set.Get(); }
-            public void AddCallbacks(IGlobalActions instance)
-            {
-                if (instance == null || m_Wrapper.m_GlobalActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_GlobalActionsCallbackInterfaces.Add(instance);
-                @GoNext.started += instance.OnGoNext;
-                @GoNext.performed += instance.OnGoNext;
-                @GoNext.canceled += instance.OnGoNext;
-            }
-
-            private void UnregisterCallbacks(IGlobalActions instance)
-            {
-                @GoNext.started -= instance.OnGoNext;
-                @GoNext.performed -= instance.OnGoNext;
-                @GoNext.canceled -= instance.OnGoNext;
-            }
-
-            public void RemoveCallbacks(IGlobalActions instance)
-            {
-                if (m_Wrapper.m_GlobalActionsCallbackInterfaces.Remove(instance))
-                    UnregisterCallbacks(instance);
-            }
-
-            public void SetCallbacks(IGlobalActions instance)
-            {
-                foreach (var item in m_Wrapper.m_GlobalActionsCallbackInterfaces)
-                    UnregisterCallbacks(item);
-                m_Wrapper.m_GlobalActionsCallbackInterfaces.Clear();
-                AddCallbacks(instance);
-            }
-        }
-        public GlobalActions @Global => new GlobalActions(this);
-
         // InGame
         private readonly InputActionMap m_InGame;
         private List<IInGameActions> m_InGameActionsCallbackInterfaces = new List<IInGameActions>();
-        private readonly InputAction m_InGame_ClickCard;
+        private readonly InputAction m_InGame_SetScaleSide;
+        private readonly InputAction m_InGame_SetScaleDirection;
         public struct InGameActions
         {
             private @InputActionsDefault m_Wrapper;
             public InGameActions(@InputActionsDefault wrapper) { m_Wrapper = wrapper; }
-            public InputAction @ClickCard => m_Wrapper.m_InGame_ClickCard;
+            public InputAction @SetScaleSide => m_Wrapper.m_InGame_SetScaleSide;
+            public InputAction @SetScaleDirection => m_Wrapper.m_InGame_SetScaleDirection;
             public InputActionMap Get() { return m_Wrapper.m_InGame; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -212,16 +202,22 @@ namespace InputCustom
             {
                 if (instance == null || m_Wrapper.m_InGameActionsCallbackInterfaces.Contains(instance)) return;
                 m_Wrapper.m_InGameActionsCallbackInterfaces.Add(instance);
-                @ClickCard.started += instance.OnClickCard;
-                @ClickCard.performed += instance.OnClickCard;
-                @ClickCard.canceled += instance.OnClickCard;
+                @SetScaleSide.started += instance.OnSetScaleSide;
+                @SetScaleSide.performed += instance.OnSetScaleSide;
+                @SetScaleSide.canceled += instance.OnSetScaleSide;
+                @SetScaleDirection.started += instance.OnSetScaleDirection;
+                @SetScaleDirection.performed += instance.OnSetScaleDirection;
+                @SetScaleDirection.canceled += instance.OnSetScaleDirection;
             }
 
             private void UnregisterCallbacks(IInGameActions instance)
             {
-                @ClickCard.started -= instance.OnClickCard;
-                @ClickCard.performed -= instance.OnClickCard;
-                @ClickCard.canceled -= instance.OnClickCard;
+                @SetScaleSide.started -= instance.OnSetScaleSide;
+                @SetScaleSide.performed -= instance.OnSetScaleSide;
+                @SetScaleSide.canceled -= instance.OnSetScaleSide;
+                @SetScaleDirection.started -= instance.OnSetScaleDirection;
+                @SetScaleDirection.performed -= instance.OnSetScaleDirection;
+                @SetScaleDirection.canceled -= instance.OnSetScaleDirection;
             }
 
             public void RemoveCallbacks(IInGameActions instance)
@@ -239,13 +235,10 @@ namespace InputCustom
             }
         }
         public InGameActions @InGame => new InGameActions(this);
-        public interface IGlobalActions
-        {
-            void OnGoNext(InputAction.CallbackContext context);
-        }
         public interface IInGameActions
         {
-            void OnClickCard(InputAction.CallbackContext context);
+            void OnSetScaleSide(InputAction.CallbackContext context);
+            void OnSetScaleDirection(InputAction.CallbackContext context);
         }
     }
 }

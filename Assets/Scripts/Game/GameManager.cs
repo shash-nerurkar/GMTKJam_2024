@@ -5,68 +5,53 @@ public class GameManager : MonoBehaviour
 {
     #region Actions
 
-    public static event Action PlayMainMenuMusicAction;
+    public static event Action OnGameStartAction;
 
-    public static event Action StopMainMenuMusicAction;
-
-    public static event Action<Level> OnLevelStartAction;
-
-    public static event Action ClearLevelDataAction;
+    public static event Action OnGameEndAction;
 
     public static event Action<float, float, Action> ShowTransitionAction;
 
     #endregion
 
 
-    #region Fields
-
-    private Level _currentLevel;
-
-    #endregion
-  
-
     #region Methods
 
     private void Awake ( ) 
     {
-        MainMenuPanel.OnStartGameButtonPressedAction += StartNewGame;
+        HUDManager.OnStartPressedAction += StartGame;
+        HUDManager.OnPausePressedAction += PauseGame;
+        HUDManager.OnResumePressedAction += ResumeGame;
+
+        Obstacle.OnPlayerHitAction += EndGame;
     }
 
     private void OnDestroy ( ) 
     {
-        MainMenuPanel.OnStartGameButtonPressedAction -= StartNewGame;
+        HUDManager.OnStartPressedAction -= StartGame;
+        HUDManager.OnPausePressedAction -= PauseGame;
+        HUDManager.OnResumePressedAction -= ResumeGame;
+
+        Obstacle.OnPlayerHitAction -= EndGame;
     }
 
-    private void Start ( ) => StartMainMenu ( fadeInSpeedInSeconds: 0f, fadeOutSpeedInSeconds: 1.5f );
-
-    private void StartNewGame ( ) 
+    private void Start ( ) => ShowTransitionAction?.Invoke ( 0f, 1f, ( ) => { } );
+                        
+    private void StartGame ( ) 
     {
-        StopMainMenuMusicAction?.Invoke ( );
+        Time.timeScale = 1f;
+
+        OnGameStartAction?.Invoke ( );
     }
-    
-    private void OnGameEnd ( Level level, bool didPlayerWin ) 
+                        
+    private void PauseGame ( ) => Time.timeScale = 0f;
+                     
+    private void ResumeGame ( ) => Time.timeScale = 1f;
+   
+    private void EndGame ( ) 
     {
-        ClearLevelDataAction?.Invoke ( );
-    }
+        OnGameEndAction?.Invoke ( );
 
-    private void StartMainMenu ( float fadeInSpeedInSeconds, float fadeOutSpeedInSeconds ) 
-    {
-        PlayMainMenuMusicAction?.Invoke ( );
-
-        ShowTransitionAction?.Invoke ( fadeInSpeedInSeconds, fadeOutSpeedInSeconds, ( ) => {
-            GameStateManager.ChangeGameState ( GameState.MainMenu );
-        } );
-    }
-
-    private void StartLevel ( Level level, float fadeInSpeedInSeconds = 1f, float fadeOutSpeedInSeconds = 1f ) 
-    {
-        ShowTransitionAction?.Invoke ( fadeInSpeedInSeconds, fadeOutSpeedInSeconds, ( ) => { 
-            _currentLevel = level;
-
-            GameStateManager.ChangeGameState ( GameState.InGame );
-
-            OnLevelStartAction?.Invoke ( level );
-        } );
+        Time.timeScale = 0f;
     }
 
     #endregion
