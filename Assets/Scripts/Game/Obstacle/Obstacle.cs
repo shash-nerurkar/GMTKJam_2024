@@ -30,10 +30,26 @@ public class Obstacle : MonoBehaviour
             Quaternion.Euler ( 0, 0, isTop ? 180 : 0 )
         );
 
-        playerDetector.Initialize ( Constants.GapWidthToStinger [ gapWidth ] );
+        playerDetector.Initialize ( GetStingerType ( ) );
         
         rb.velocity = new Vector2 ( -moveSpeed, 0f );
         Destroy ( gameObject, lifeTime );
+
+        return;
+
+
+        SoundType GetStingerType ( ) 
+        {
+            var thresholdLower = Constants.ObstacleGapWidthRange.x + ( ( Constants.ObstacleGapWidthRange.y - Constants.ObstacleGapWidthRange.x ) / 3 );
+            var thresholdUpper = Constants.ObstacleGapWidthRange.x + ( ( Constants.ObstacleGapWidthRange.y - Constants.ObstacleGapWidthRange.x ) * 2 / 3 );
+
+            if ( gapWidth >= Constants.ObstacleGapWidthRange.x && gapWidth < thresholdLower ) 
+                return SoundType.Stinger1;
+            else if ( gapWidth >= thresholdLower && gapWidth < thresholdUpper ) 
+                return SoundType.Stinger2;
+            else 
+                return SoundType.Stinger3;
+        }
     }
 
     private void OnTriggerEnter2D ( Collider2D other ) 

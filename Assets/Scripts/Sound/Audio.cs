@@ -36,7 +36,7 @@ public abstract class Audio
 
     public void Play ( ) 
     {
-        SetSource ( );
+        // SetSource ( );
 
         source.Play ( );
     }
@@ -50,14 +50,16 @@ public abstract class Audio
     {
         Play ( );
 
-        DOTween.To ( ( ) => 0, x => source.volume = x, volume, 1.5f )
+        var destinationVolume = source.volume;
+        DOTween.To ( ( ) => 0, x => source.volume = x, destinationVolume, 1.5f )
             .SetEase ( Ease.InQuad )
             .OnComplete ( ( ) => { } );
     }
 
     public void FadeOutStop ( ) 
     {
-        DOTween.To ( ( ) => volume, x => source.volume = x, 0, 1.5f )
+        var sourceVolume = source.volume;
+        DOTween.To ( ( ) => sourceVolume, x => source.volume = x, 0, 1.5f )
             .SetEase ( Ease.OutQuad )
             .OnComplete ( ( ) => Stop ( ) );
     }

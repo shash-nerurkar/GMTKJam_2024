@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
     private void Initialize ( ) 
     {
         transform.position = _basePosition;
+
         faceSpriteRenderer.sprite = expressionBaseSprite;
 
         transform.localScale = Vector3.one;
@@ -79,7 +80,12 @@ public class Player : MonoBehaviour
         peripheralsBottomPivotTransform.localScale = Vector3.one;
     }
     
-    private void Kill ( ) => faceSpriteRenderer.sprite = expressionDyingSprite;
+    private void Kill ( ) 
+    {
+        faceSpriteRenderer.sprite = expressionDyingSprite;
+        
+        _scaleTweenSequence.Kill ( );
+    }
 
     private void RemoveSideToScale ( ) 
     {

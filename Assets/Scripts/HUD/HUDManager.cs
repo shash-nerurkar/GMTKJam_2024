@@ -78,7 +78,6 @@ public class HUDManager : MonoBehaviour
 
     public void OnStartButtonPressed ( ) 
     {
-        SoundManager.Instance.Play ( SoundType.UIClicked );
 
         switch ( _startButtonState ) 
         {
@@ -97,6 +96,8 @@ public class HUDManager : MonoBehaviour
                 break;
 
             case StartButtonState.Pause:
+                SoundManager.Instance.Play ( SoundType.UIClicked );
+                
                 _startButtonState = StartButtonState.Play;
                 startButtonIcon.sprite = playIcon;
                 startButtonIcon.color = Constants.ThemeOrangeColor;
