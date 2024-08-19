@@ -8,6 +8,18 @@ public class Player : MonoBehaviour
 
     [ SerializeField ] private SpriteRenderer spriteRenderer;
 
+    [ Header ( "Expressions" ) ]
+
+    [ SerializeField ] private SpriteRenderer faceSpriteRenderer;
+
+    [ SerializeField ] private Sprite expressionBaseSprite;
+
+    [ SerializeField ] private Sprite expressionStretchSprite;
+
+    [ SerializeField ] private Sprite expressionDyingSprite;
+
+    [ Header ( "Peripheral Pivots" ) ]
+
     [ SerializeField ] private Transform peripheralsTopPivotTransform;
 
     [ SerializeField ] private Transform peripheralsBottomPivotTransform;
@@ -40,6 +52,8 @@ public class Player : MonoBehaviour
 
         GameManager.OnGameStartAction += Initialize;
 
+        Obstacle.OnPlayerHitAction += Kill;
+
         _basePosition = transform.position;
     }
 
@@ -51,17 +65,22 @@ public class Player : MonoBehaviour
         InputManager.ScalePlayerAction -= Scale;
 
         GameManager.OnGameStartAction -= Initialize;
+
+        Obstacle.OnPlayerHitAction += Kill;
     }
 
     private void Initialize ( ) 
     {
         transform.position = _basePosition;
+        faceSpriteRenderer.sprite = expressionBaseSprite;
 
         transform.localScale = Vector3.one;
         peripheralsTopPivotTransform.localScale = Vector3.one;
         peripheralsBottomPivotTransform.localScale = Vector3.one;
     }
     
+    private void Kill ( ) => faceSpriteRenderer.sprite = expressionDyingSprite;
+
     private void RemoveSideToScale ( ) 
     {
         edgeIndicatorTop.SetActive ( false );
@@ -70,7 +89,7 @@ public class Player : MonoBehaviour
 
     private void SetSideToScale ( int sideToScale ) 
     {
-        switch ( Math.Sign ( sideToScale ) ) 
+        switch ( sideToScale ) 
         {
             case 0:
                 edgeIndicatorTop.SetActive ( false );
@@ -85,6 +104,11 @@ public class Player : MonoBehaviour
             case 1:
                 edgeIndicatorTop.SetActive ( true );
                 edgeIndicatorBottom.SetActive ( false );
+                break;
+
+            case 2:
+                edgeIndicatorTop.SetActive ( true );
+                edgeIndicatorBottom.SetActive ( true );
                 break;
         }
     }
@@ -126,7 +150,9 @@ public class Player : MonoBehaviour
         _scaleTweenSequence.Join ( peripheralsTopPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / newScaleY ) ), sequenceSpeed ) );
         _scaleTweenSequence.Join ( peripheralsBottomPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / newScaleY ) ), sequenceSpeed ) );
 
-        _scaleTweenSequence.Play ( );
+        faceSpriteRenderer.sprite = expressionStretchSprite;
+        _scaleTweenSequence.Play ( )
+            .OnComplete ( ( ) => faceSpriteRenderer.sprite = expressionBaseSprite ) ;
     }
 
     #endregion

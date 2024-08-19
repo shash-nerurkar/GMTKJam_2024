@@ -85,6 +85,7 @@ public class HUDManager : MonoBehaviour
             case StartButtonState.Start:
                 _startButtonState = StartButtonState.Pause;
                 startButtonIcon.sprite = pauseIcon;
+                startButtonIcon.color = Constants.ThemeOrangeColor;
 
                 _currentTimeInSeconds = 0;
                 _timeDisplayCoroutine = RunTimer ( );
@@ -98,6 +99,7 @@ public class HUDManager : MonoBehaviour
             case StartButtonState.Pause:
                 _startButtonState = StartButtonState.Play;
                 startButtonIcon.sprite = playIcon;
+                startButtonIcon.color = Constants.ThemeOrangeColor;
 
                 StopCoroutine ( _timeDisplayCoroutine );
                 
@@ -109,6 +111,7 @@ public class HUDManager : MonoBehaviour
             case StartButtonState.Play:
                 _startButtonState = StartButtonState.Pause;
                 startButtonIcon.sprite = pauseIcon;
+                startButtonIcon.color = Constants.ThemeOrangeColor;
 
                 StartCoroutine ( _timeDisplayCoroutine );
                 
@@ -150,6 +153,7 @@ public class HUDManager : MonoBehaviour
     {
         _startButtonState = StartButtonState.Start;
         startButtonIcon.sprite = restartIcon;
+        startButtonIcon.color = Constants.ThemeGreenColor;
 
         StopCoroutine ( _timeDisplayCoroutine );
         

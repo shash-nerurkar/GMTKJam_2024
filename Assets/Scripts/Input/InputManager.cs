@@ -31,8 +31,8 @@ public class InputManager : MonoBehaviour
         GameManager.OnGameStartAction += EnableInGameActions;
         GameManager.OnGameEndAction += DisableInGameActions;
 
-        HUDManager.OnPausePressedAction += DisableInGameActions;
         HUDManager.OnResumePressedAction += EnableInGameActions;
+        HUDManager.OnPausePressedAction += OnPausePressedAction;
     }
 
     private void OnDestroy ( ) 
@@ -40,11 +40,22 @@ public class InputManager : MonoBehaviour
         GameManager.OnGameStartAction += EnableInGameActions;
         GameManager.OnGameEndAction += DisableInGameActions;
 
-        HUDManager.OnPausePressedAction -= DisableInGameActions;
         HUDManager.OnResumePressedAction -= EnableInGameActions;
+        HUDManager.OnPausePressedAction -= OnPausePressedAction;
     }
 
-    private void EnableInGameActions ( ) => _inputActionsDefault.InGame.Enable ( );
+    private void EnableInGameActions ( ) 
+    {
+        ScaleSideUnselectedAction?.Invoke ( );
+
+        _inputActionsDefault.InGame.Enable ( );
+    }
+
+    private void OnPausePressedAction ( ) 
+    {
+        ScaleSideSelectedAction?.Invoke ( 2 );
+        DisableInGameActions ( );
+    }
 
     private void DisableInGameActions ( ) => _inputActionsDefault.InGame.Disable ( );
 

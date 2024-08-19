@@ -1551,7 +1551,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 57.2
+  m_Spacing: 50
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -2366,7 +2366,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 187.015, y: 0}
+  m_AnchoredPosition: {x: 167.365, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1663082946
@@ -2389,7 +2389,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Starobiravoliscious
+  m_text: Starobravolicious
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d939469731f407440b1a0eb854906421, type: 2}
   m_sharedMaterial: {fileID: 5153452707536732280, guid: d939469731f407440b1a0eb854906421, type: 2}
@@ -2518,7 +2518,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: 0, y: 60}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1666439851
 MonoBehaviour:
@@ -2631,7 +2631,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: 33.980583
   m_PreferredHeight: -1
-  m_FlexibleWidth: 3
+  m_FlexibleWidth: 8
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!4 &1763417827 stripped
@@ -2947,7 +2947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9490197, g: 0.75294125, b: 0.3803922, a: 1}
+  m_Color: {r: 0.9450981, g: 0.7490196, b: 0.37647063, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3501,6 +3501,110 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[0].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[1].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[2].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[3].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[7].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[9].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[10].isTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[0].gapWidth
+      value: 5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[1].gapWidth
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[2].gapWidth
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[3].gapWidth
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[4].gapWidth
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[5].gapWidth
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[6].gapWidth
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[7].gapWidth
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[8].gapWidth
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[0].delayAfterInSeconds
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[1].delayAfterInSeconds
+      value: 4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[2].delayAfterInSeconds
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[3].delayAfterInSeconds
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[4].delayAfterInSeconds
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[5].delayAfterInSeconds
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[6].delayAfterInSeconds
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[7].delayAfterInSeconds
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433678513303237478, guid: 3810815feb36e754e889311593d79eb5, type: 3}
+      propertyPath: obstaclePairSpawnDatas.Array.data[8].delayAfterInSeconds
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3810815feb36e754e889311593d79eb5, type: 3}
 --- !u!1001 &4652478999753042930
@@ -3729,14 +3833,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 56608392, guid: 3286e389b9328d147893e8e408fef6ab, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 486707805, guid: 3286e389b9328d147893e8e408fef6ab, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7457799516472654197, guid: 3286e389b9328d147893e8e408fef6ab, type: 3}
       propertyPath: m_Name
       value: Player

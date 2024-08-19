@@ -45,40 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 2230471917689215935, guid: eaa282adc142c1c4b950881323dc0b4f, type: 3}
+  obstacleMoveSpeed: 10
   obstaclePairSpawnDatas:
-  - gapWidth: 1.5
-    isTop: 1
-    delayAfterInSeconds: 0.2
-  - gapWidth: 2.5
-    isTop: 1
-    delayAfterInSeconds: 0.2
-  - gapWidth: 3.5
-    isTop: 1
-    delayAfterInSeconds: 0.2
-  - gapWidth: 4.5
-    isTop: 1
-    delayAfterInSeconds: 0.2
   - gapWidth: 5.5
-    isTop: 1
-    delayAfterInSeconds: 0.2
-  - gapWidth: 6.5
-    isTop: 1
-    delayAfterInSeconds: 0.2
-  - gapWidth: 7.5
-    isTop: 1
-    delayAfterInSeconds: 3.5
-  - gapWidth: 2.5
-    isTop: 1
-    delayAfterInSeconds: 1
+    isTop: 0
+    delayAfterInSeconds: 2.5
+  - gapWidth: 3.5
+    isTop: 0
+    delayAfterInSeconds: 4.5
   - gapWidth: 2.5
     isTop: 0
-    delayAfterInSeconds: 3.5
-  - gapWidth: 3.5
+    delayAfterInSeconds: 2.5
+  - gapWidth: 1.5
     isTop: 0
-    delayAfterInSeconds: 0.5
-  - gapWidth: 3.5
-    isTop: 1
-    delayAfterInSeconds: 0.5
-  - gapWidth: 3.5
-    isTop: 0
-    delayAfterInSeconds: 0.5
+    delayAfterInSeconds: 2.5

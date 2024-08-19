@@ -12,6 +12,15 @@ public static class Constants
 
     #endregion
 
+    #region Themes
+
+    public static readonly Color ThemeOrangeColor = new ( 0.9450981f, 0.7490196f, 0.3764706f );
+
+    public static readonly Color ThemeGreenColor = new ( 0.003921569f, 1f, 0.1019608f );
+
+    #endregion
+    
+
 
     #region In-Game
 

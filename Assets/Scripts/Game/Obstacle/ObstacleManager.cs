@@ -9,6 +9,8 @@ public class ObstacleManager : MonoBehaviour
 
     [ SerializeField ] private GameObject obstaclePrefab;
 
+    [ SerializeField ] [ Range ( 1f, 20f ) ] private float obstacleMoveSpeed = 10f;
+
     [ SerializeField ] private List<ObstaclePairSpawnData> obstaclePairSpawnDatas = new ( ) {
         new ( 1.5f, true, 0.2f ),
         new ( 2.5f, true, 0.2f ),
@@ -57,7 +59,7 @@ public class ObstacleManager : MonoBehaviour
         for ( var i = 0; i < transform.childCount; i++ ) 
             Destroy ( transform.GetChild ( i ).gameObject );
 
-        SetObstaclesMoveSpeed ( 10 );
+        SetObstaclesMoveSpeed ( obstacleMoveSpeed );
         
         _spawnObstaclesCoroutine = SpawnObstacles ( );
         StartCoroutine ( _spawnObstaclesCoroutine );
