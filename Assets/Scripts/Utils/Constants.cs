@@ -17,6 +17,8 @@ public static class Constants
 
     public static readonly Vector2 InGameViewportVerticalRange = new ( -2.75f, 4.75f );
 
+    public static bool IsPointYInsideInGameViewport ( float pointY ) => pointY > InGameViewportVerticalRange.x && pointY < InGameViewportVerticalRange.y;
+
     #endregion
 
 

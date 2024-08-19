@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -18,6 +19,12 @@ public class Player : MonoBehaviour
     [ SerializeField ] private GameObject edgeIndicatorBottom;
 
     private Vector3 _basePosition;
+
+    private Sequence _scaleTweenSequence;
+
+    private Vector3 _currentDestinationScale;
+
+    private Vector3 _currentDestinationPosition;
 
     #endregion
 
@@ -84,11 +91,10 @@ public class Player : MonoBehaviour
 
     public void Scale ( int sideToScale, int scaleValue ) 
     {
-        var initialScale = transform.localScale;
-        var initialPosition = transform.position;
-        var scaleDirection = scaleValue > 0 ? 1 : -1;
+        var initialScale = _scaleTweenSequence.IsActive ( ) ? _currentDestinationScale : transform.localScale;
+        var initialPosition = _scaleTweenSequence.IsActive ( ) ? _currentDestinationPosition : transform.position;
 
-        float scaleOffsetY = 1f * ( sideToScale != scaleDirection ? -1 : 1 );
+        float scaleOffsetY = 1f * ( sideToScale != Math.Sign ( scaleValue ) ? -1 : 1 );
         var isNewScaleTooLess = Mathf.Abs ( initialScale.y + scaleOffsetY ) < 1;
 
         float newScaleY = isNewScaleTooLess ? initialScale.y * -1f : initialScale.y + scaleOffsetY;
@@ -96,22 +102,31 @@ public class Player : MonoBehaviour
         
         transform.localScale = new Vector3 ( initialScale.x, newScaleY );
         transform.position = new Vector3 ( initialPosition.x, initialPosition.y + positionOffsetY );
-        
-        peripheralsTopPivotTransform.localScale = new Vector3 ( 1 / transform.localScale.x, Mathf.Abs ( 1 / transform.localScale.y ) );
-        peripheralsBottomPivotTransform.localScale = new Vector3 ( 1 / transform.localScale.x, Mathf.Abs ( 1 / transform.localScale.y ) );
 
-        if ( spriteRenderer.bounds.min.y <= Constants.InGameViewportVerticalRange.x || spriteRenderer.bounds.min.y >= Constants.InGameViewportVerticalRange.y || 
-                        spriteRenderer.bounds.max.y <= Constants.InGameViewportVerticalRange.x || spriteRenderer.bounds.max.y >= Constants.InGameViewportVerticalRange.y ) 
-        {
-            transform.localScale = initialScale;
-            transform.position = initialPosition;
+        var newBottomLeftY = spriteRenderer.bounds.min.y;
+        var newTopRightY = spriteRenderer.bounds.max.y;
 
-            peripheralsTopPivotTransform.localScale = new Vector3 ( 1 / transform.localScale.x, Mathf.Abs ( 1 / transform.localScale.y ) );
-            peripheralsBottomPivotTransform.localScale = new Vector3 ( 1 / transform.localScale.x, Mathf.Abs ( 1 / transform.localScale.y ) );
-        }
+        transform.localScale = initialScale;
+        transform.position = initialPosition;
+
+        if ( !Constants.IsPointYInsideInGameViewport ( newBottomLeftY ) || !Constants.IsPointYInsideInGameViewport ( newTopRightY ) ) 
+            return;
+
+        _currentDestinationScale = new Vector3 ( initialScale.x, newScaleY );
+        _currentDestinationPosition = new Vector3 ( initialPosition.x, initialPosition.y + positionOffsetY );
+
+        if ( _scaleTweenSequence.IsActive ( ) ) 
+            _scaleTweenSequence.Kill ( );
+
+        _scaleTweenSequence = DOTween.Sequence ( );
+        var sequenceSpeed = 0.1f;
         
-        // transform.DOScale ( new Vector3 ( initialScale.x, newScaleY ), 0.25f );
-        // transform.DOMove ( new Vector3 ( initialPosition.x, initialPosition.y + positionOffsetY ), 0.25f );
+        _scaleTweenSequence.Join ( transform.DOScale ( _currentDestinationScale, sequenceSpeed ) );
+        _scaleTweenSequence.Join ( transform.DOMove ( _currentDestinationPosition, sequenceSpeed ) );
+        _scaleTweenSequence.Join ( peripheralsTopPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / newScaleY ) ), sequenceSpeed ) );
+        _scaleTweenSequence.Join ( peripheralsBottomPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / newScaleY ) ), sequenceSpeed ) );
+
+        _scaleTweenSequence.Play ( );
     }
 
     #endregion

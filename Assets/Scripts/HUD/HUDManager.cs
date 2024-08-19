@@ -21,7 +21,9 @@ public class HUDManager : MonoBehaviour
 
     #region Fields
 
-    [ Header ( "Visualizer" ) ]
+    [ Header ( "Top Panel" ) ]
+
+    [ SerializeField ] private GameObject pauseBlockPanel;
 
     [ SerializeField ] private BackgroundVisualizer visualizer;
     
@@ -89,6 +91,7 @@ public class HUDManager : MonoBehaviour
                 StartCoroutine ( _timeDisplayCoroutine );
 
                 OnStartPressedAction?.Invoke ( );
+                pauseBlockPanel.SetActive ( false );
 
                 break;
 
@@ -99,6 +102,7 @@ public class HUDManager : MonoBehaviour
                 StopCoroutine ( _timeDisplayCoroutine );
                 
                 OnPausePressedAction?.Invoke ( );
+                pauseBlockPanel.SetActive ( true );
 
                 break;
 
@@ -109,6 +113,7 @@ public class HUDManager : MonoBehaviour
                 StartCoroutine ( _timeDisplayCoroutine );
                 
                 OnResumePressedAction?.Invoke ( );
+                pauseBlockPanel.SetActive ( false );
             
                 break;
         }
@@ -129,13 +134,13 @@ public class HUDManager : MonoBehaviour
 
     private void Awake ( ) 
     {
-        GameManager.ShowTransitionAction += transition.FadeIn;
+        // GameManager.ShowTransitionAction += transition.FadeIn;
         GameManager.OnGameEndAction += SetStateToRestart;
     }
     
     private void OnDestroy ( ) 
     {
-        GameManager.ShowTransitionAction -= transition.FadeIn;
+        // GameManager.ShowTransitionAction -= transition.FadeIn;
         GameManager.OnGameEndAction -= SetStateToRestart;
     }
 
@@ -147,6 +152,8 @@ public class HUDManager : MonoBehaviour
         startButtonIcon.sprite = restartIcon;
 
         StopCoroutine ( _timeDisplayCoroutine );
+        
+        pauseBlockPanel.SetActive ( true );
     }
 
     private IEnumerator RunTimer ( ) 
