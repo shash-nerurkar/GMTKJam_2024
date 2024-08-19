@@ -76,7 +76,7 @@ public class ObstacleManager : MonoBehaviour
 
     private int _currentDifficulty = 1;
 
-    private float _obstacleMoveSpeed = 6f;
+    private float _obstacleMoveSpeed = 8f;
 
     private float _currentMoveSpeed;
 

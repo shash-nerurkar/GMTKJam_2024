@@ -85,16 +85,14 @@ public class SoundManager : MonoBehaviour
 
     private void PlayMusic ( ) 
     {
-        Play ( MusicType.InGame1Atmosphere );
-        Play ( MusicType.InGame1Beat );
+        Play ( MusicType.TrackDnB );
         
-        VisualizeTrackAction?.Invoke ( GetTrackSource ( MusicType.InGame1Beat ) );
+        VisualizeTrackAction?.Invoke ( GetTrackSource ( MusicType.TrackDnB ) );
     }
 
     private void StopMusic ( ) 
     {
-        Stop ( MusicType.InGame1Atmosphere );
-        Stop ( MusicType.InGame1Beat );
+        Stop ( MusicType.TrackDnB );
 
         foreach ( var sound in sounds.Where ( s => s.IsPlaying ) ) 
             sound.Stop ( );
@@ -104,14 +102,12 @@ public class SoundManager : MonoBehaviour
 
     private void PauseMusic ( ) 
     {
-        Pause ( MusicType.InGame1Atmosphere );
-        Pause ( MusicType.InGame1Beat );
+        Pause ( MusicType.TrackDnB );
     }
 
     private void ResumeMusic ( ) 
     {
-        Resume ( MusicType.InGame1Atmosphere );
-        Resume ( MusicType.InGame1Beat );
+        Resume ( MusicType.TrackDnB );
     }
 
     private void Play ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.FadeInPlay ( );
