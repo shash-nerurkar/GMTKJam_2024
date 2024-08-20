@@ -63,11 +63,17 @@ public class HUDManager : MonoBehaviour
 
     [ SerializeField ] private TextMeshProUGUI collectibleCountLabel;
 
+    [ SerializeField ] private GameObject ratingStarsPanel;
+
     [ SerializeField ] private Image [ ] ratingStars;
 
     [ SerializeField ] private Sprite ratingStarEmpty;
     
     [ SerializeField ] private Sprite ratingStarFilled;
+
+    [ Header ( "Lore Image" ) ]
+
+    [ SerializeField ] private Image loreImage;
 
     [ Header ( "Transition" ) ]
 
@@ -101,6 +107,13 @@ public class HUDManager : MonoBehaviour
 
 
     #region Public
+
+    public void OnLoreButtonClicked ( ) 
+    {
+        SoundManager.Instance.Play ( SoundType.PlayClicked );
+
+        transition.FadeIn ( 1f, 1f, ( ) => loreImage.gameObject.SetActive ( false ) );
+    }
 
     public void OnStartButtonPressed ( ) 
     {
@@ -256,27 +269,44 @@ public class HUDManager : MonoBehaviour
 
     private void ShowRating ( float NPESpeedScale, int collectibleSpawnCount ) 
     {
+        ratingStarsPanel.SetActive ( true );
+
         var rating = 0.0f;
         rating += 2.5f * ( ( NPESpeedScale - 1.0f ) / ( Constants.NPESpeedMaxScale - 1.0f ) );
-        rating += 2.5f * ( collectibleSpawnCount == 0 ? 1 : ( ( float ) _currentCollectibleCount / collectibleSpawnCount ) );
+        rating += 2.5f * ( collectibleSpawnCount == 0 ? 0 : ( ( float ) _currentCollectibleCount / collectibleSpawnCount ) );
 
-        _showRatingScaleUpSequence = DOTween.Sequence ( ); //.SetDelay ( 1.0f );
-        _showRatingScaleDownSequence = DOTween.Sequence ( ); //.SetDelay ( 2.0f );
+        _showRatingScaleUpSequence = DOTween.Sequence ( );
+        _showRatingScaleDownSequence = DOTween.Sequence ( );
         var sequenceSpeed = 0.5f;
         
         for ( int i = 0; i < rating; i++ ) 
-            _showRatingScaleUpSequence.Join ( ratingStars [ i ].transform.DOScale ( 1.5f, sequenceSpeed ) ) 
-                .OnComplete ( ( ) => { 
-                    ratingStars [ i ].sprite = ratingStarFilled;
-                    _showRatingScaleDownSequence.Join ( ratingStars [ i ].transform.DOScale ( 1f, sequenceSpeed ) );
-                } );
+        {
+            ratingStars [ i ].sprite = ratingStarFilled;
+
+            _showRatingScaleUpSequence.Join ( 
+                ratingStars [ i ].transform.DOScale ( 1.5f, sequenceSpeed ) 
+                    .SetUpdate ( true ) 
+            );
+
+            _showRatingScaleDownSequence.Join ( 
+                ratingStars [ i ].transform.DOScale ( 1f, sequenceSpeed ) 
+                .SetUpdate ( true ) 
+            );
+        }
         
         _showRatingScaleUpSequence.Play ( )
-            .OnComplete ( ( ) => _showRatingScaleDownSequence.Play ( ) );
+            .SetUpdate ( true ) 
+            .SetDelay ( 1.0f );
+        
+         _showRatingScaleDownSequence.Play ( )
+            .SetUpdate ( true )
+            .SetDelay ( 2.0f );
     }
 
     private void HideRating ( ) 
     {
+        ratingStarsPanel.SetActive ( false );
+
         if ( _showRatingScaleUpSequence.IsActive ( )  ) 
             _showRatingScaleUpSequence.Kill ( );
         

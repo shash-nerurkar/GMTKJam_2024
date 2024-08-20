@@ -29,7 +29,7 @@ public partial class NonPlayableEntityManager
                 new ( 1.5f, true, 4f ),
             },
             collectibleDatas : new ( ) {
-                new ( 3, 1 ),
+                new ( -3, 1 ),
                 new ( 1, 1 ),
                 new ( 1, 0.9f ),
                 new ( 2, 1 ),
@@ -127,12 +127,58 @@ public partial class NonPlayableEntityManager
                 new ( 1.5f, true, 2f ),
             },
             collectibleDatas : new ( ) { 
-                new ( 2, 2.5f ),
-                new ( 0, 2 ),
-                new ( 2, 2.5f ),
+                new ( -2, 2.5f ),
+                new (  0, 2 ),
+                new (  2, 2.5f ),
                 new ( -1, 2.5f ),
             }
         ),
+
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 1.5f, true, 1f ),
+                new ( 2.5f, false, 1f ),
+                new ( 1.5f, true, 1f ),
+                new ( 1.5f, false, 1f ),
+                new ( 1.5f, false, 1f ),
+                new ( 1.5f, false, 1f ),
+                new ( 1.5f, false, 1f ),
+                new ( 1.5f, true, 7f ),
+            },
+            collectibleDatas : new ( ) {
+                new ( -3, 3.7f ),
+                new ( -3, 1 ),
+                new ( -3, 1.1f ),
+                new ( -3, 0.8f ),
+                new ( -3, 1.3f ),
+                new ( 3, 0 ),
+                new ( 0 , 0 ),
+                new ( -3, 0 ),
+            }
+        ),
+    };
+
+    private readonly List<NPESpawnPattern> _collectibleOnlyPatterns = new ( ) { 
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 3.5f, false, 0f ),
+                new ( 7f, true, 2f ),
+                new ( 5.5f, false, 0f ),
+                new ( 5.5f, true, 2f ),
+                new ( 6.5f, false, 0f ),
+                new ( 4.5f, true, 2f ),
+                new ( 6.5f, false, 0f ),
+                new ( 4.5f, true, 3f ),
+            },
+            collectibleDatas : new ( ) {
+                new ( 0.76f, 2 ),
+                new ( -1.63f, 2 ),
+                new ( 0.81f, 1.2f ),
+                new ( -1.25f, 2 ),
+                new ( 1.25f, 2 ),
+            }
+        ),
+        
     };
 
     private NPESpawnPattern GetRandomSpawnPattern ( List<NPESpawnPattern> spawnPattern ) => spawnPattern [ Random.Range ( 0, spawnPattern.Count ) ];

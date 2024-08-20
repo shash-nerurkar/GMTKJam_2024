@@ -38,6 +38,14 @@ public class BackgroundVisualizer : MonoBehaviour
 
         SoundManager.VisualizeTrackAction += StartTrack;
         SoundManager.StopVisualizingTrackAction += StopTrack;
+
+        // if ( Application.platform == RuntimePlatform.WebGLPlayer ) 
+        // {
+            barCount = 50;
+            barHeightMultiplier = 110;
+            normalizerCoeff = 15;
+            smoothingValue = 0.07f;
+        // }
     }
 
     private void OnDestroy ( ) 
@@ -89,7 +97,10 @@ public class BackgroundVisualizer : MonoBehaviour
     {
         if ( _currentTrack != null ) 
         {
-            _currentTrack.GetSpectrumData ( _spectrumData, 0, FFTWindow.Blackman );
+            // if ( Application.platform == RuntimePlatform.WebGLPlayer ) 
+                FillSpectrumDataWithDummyData ( );
+            // else 
+            //     _currentTrack.GetSpectrumData ( _spectrumData, 0, FFTWindow.Blackman );
 
             var groupSize = Mathf.FloorToInt ( _spectrumData.Length / _bars.Length );
             for ( var i = 0; i < _bars.Length; i++ ) 
@@ -107,6 +118,21 @@ public class BackgroundVisualizer : MonoBehaviour
 
                 _bars [ i ].sizeDelta = new Vector2 ( _bars [ i ].sizeDelta.x, _smoothedValues [ i ] );
             }
+        }
+    }
+
+    private void FillSpectrumDataWithDummyData ( ) 
+    {
+        var amplitude = 0.5f;
+        var frequency = 1f;
+        var noiseFactor = 0.2f;
+
+        for ( var i = 0; i < _spectrumData.Length; i++ ) 
+        {
+            float baseValue = Mathf.Sin ( Time.time * frequency + i * 0.5f ) * amplitude;
+            float noise = Random.Range ( -noiseFactor, noiseFactor );
+
+            _spectrumData [ i ] = Mathf.Abs ( baseValue + noise );
         }
     }
 

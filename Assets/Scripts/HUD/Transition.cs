@@ -20,7 +20,8 @@ public class Transition : MonoBehaviour
 
         transitionImage.color = Constants.TransitionFadeOutColor;
 
-        DOTween.To ( ( ) => transitionImage.color, x => transitionImage.color = x, Constants.TransitionFadeInColor, fadeInSpeedInSeconds )
+        DOTween.To ( ( ) => transitionImage.color, x => transitionImage.color = x, Constants.TransitionFadeInColor, fadeInSpeedInSeconds ) 
+            .SetUpdate ( true ) 
             .OnComplete ( ( ) => 
             {
                 onFadeInCompleteAction ( );
@@ -34,6 +35,7 @@ public class Transition : MonoBehaviour
         transitionImage.color = Constants.TransitionFadeInColor;
 
         DOTween.To ( ( ) => transitionImage.color, x => transitionImage.color = x, Constants.TransitionFadeOutColor, speedInSeconds ) 
+            .SetUpdate ( true ) 
             .SetDelay ( 1 ) 
             .OnComplete ( ( ) => 
             {

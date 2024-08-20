@@ -48,6 +48,8 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 
     private int _currentCollectibleSpawnCount;
 
+    private int _timeElapsedInSeconds;
+
     #endregion
 
 
@@ -109,6 +111,7 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         _currentDifficulty = 1;
         _currentNPESpeedScale = 1;
         _currentCollectibleSpawnCount = 0;
+        _timeElapsedInSeconds = 0;
     }
 
 
@@ -169,20 +172,52 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 
     private NPESpawnPattern ChoosePatternToSpawn ( ) 
     {
-        switch ( _currentDifficulty ) 
+        if ( _timeElapsedInSeconds < 60 ) 
         {
-            case 1:
-                _currentDifficulty = 2;
+            var randomVal = Random.Range ( 0.0f, 1.0f );
+
+            if ( randomVal < 0.4f ) 
                 return GetRandomSpawnPattern ( _difficulty1Patterns );
-            
-            case 2:
-                _currentDifficulty = 3;
+            else if ( randomVal < 0.8f ) 
+                return GetRandomSpawnPattern ( _collectibleOnlyPatterns );
+            else 
                 return GetRandomSpawnPattern ( _difficulty2Patterns );
-            
-            case 3:
-                _currentDifficulty = 1;
+        }
+        else if ( _timeElapsedInSeconds < 120 ) 
+        {
+            var randomVal = Random.Range ( 0.0f, 1.0f );
+
+            if ( randomVal < 0.4f ) 
+                return GetRandomSpawnPattern ( _difficulty2Patterns );
+            else if ( randomVal < 0.8f ) 
+                return GetRandomSpawnPattern ( _collectibleOnlyPatterns );
+            else 
                 return GetRandomSpawnPattern ( _difficulty3Patterns );
         }
+        else 
+        {
+            switch ( _currentDifficulty ) 
+            {
+                case 1:
+                    _currentDifficulty = 2;
+                    return GetRandomSpawnPattern ( _difficulty1Patterns );
+                
+                case 2:
+                    _currentDifficulty = 3;
+                    return GetRandomSpawnPattern ( _difficulty2Patterns );
+                
+                case 3:
+                    _currentDifficulty = 1;
+                    
+                    var randomVal = Random.Range ( 0.0f, 1.0f );
+
+                    if ( randomVal < 0.5f ) 
+                        return GetRandomSpawnPattern ( _collectibleOnlyPatterns );
+                    else 
+                        return GetRandomSpawnPattern ( _difficulty3Patterns );
+            }
+        }
+
 
         return GetRandomSpawnPattern ( _tutorialPatterns );
     }
@@ -194,13 +229,12 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 
     private IEnumerator ScaleNPEMoveSpeed ( ) 
     {
-        var initialScaleIncrement = 0.0005f;
-        float startTime = Time.time;
+        var initialScaleIncrement = 1.0f / 600.0f;
 
         while ( true ) 
         {
-            initialScaleIncrement *= Mathf.Exp ( 0.1f * ( Time.time - startTime ) );
             _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + initialScaleIncrement, Constants.NPESpeedMaxScale );
+            ++_timeElapsedInSeconds;
 
             Debug.Log ( _currentNPESpeedScale );
             
