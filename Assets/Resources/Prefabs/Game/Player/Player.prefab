@@ -745,7 +745,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 7457799516472654198}
   faceSpriteRenderer: {fileID: 1142494571}
   expressionBaseSprite: {fileID: 21300000, guid: 04e7697014cfdea48899b9f8fe068e5c, type: 3}
-  expressionStretchSprite: {fileID: 21300000, guid: 04e7697014cfdea48899b9f8fe068e5c, type: 3}
+  expressionStretchSprite: {fileID: 21300000, guid: 98cc31500aab9e04f8c696592575b713, type: 3}
   expressionDyingSprite: {fileID: 21300000, guid: 6b26247583c65f549b9d9da05b83cdd0, type: 3}
   peripheralsTopPivotTransform: {fileID: 1736669442}
   peripheralsBottomPivotTransform: {fileID: 454319749}

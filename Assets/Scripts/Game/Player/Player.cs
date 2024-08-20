@@ -42,6 +42,8 @@ public class Player : MonoBehaviour
 
     private Sequence _scaleTweenSequence;
 
+    private Tween _scaleExpressionTween;
+
     private Vector3 _currentDestinationScale;
 
     private Vector3 _currentDestinationPosition;
@@ -95,6 +97,7 @@ public class Player : MonoBehaviour
         faceSpriteRenderer.sprite = expressionDyingSprite;
         
         _scaleTweenSequence.Kill ( );
+        _scaleExpressionTween.Kill ( );
     }
 
     private void AdjustScaleSensitivity ( float fraction ) => _currentScaleSensitivity = fraction;
@@ -207,9 +210,13 @@ public class Player : MonoBehaviour
         _scaleTweenSequence.Join ( peripheralsTopPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / _currentDestinationScale.y ) ), sequenceSpeed ) );
         _scaleTweenSequence.Join ( peripheralsBottomPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / _currentDestinationScale.y ) ), sequenceSpeed ) );
 
+        _scaleTweenSequence.Play ( );
+
+        if ( _scaleExpressionTween.IsActive ( ) ) 
+            _scaleExpressionTween.Kill ( );
+        
         faceSpriteRenderer.sprite = expressionStretchSprite;
-        _scaleTweenSequence.Play ( )
-            .OnComplete ( ( ) => faceSpriteRenderer.sprite = expressionBaseSprite ) ;
+        _scaleExpressionTween = DOVirtual.DelayedCall ( 0.5f, ( ) => faceSpriteRenderer.sprite = expressionBaseSprite );
     }
 
     #endregion
