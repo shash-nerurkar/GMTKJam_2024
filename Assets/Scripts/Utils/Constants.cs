@@ -25,9 +25,9 @@ public static class Constants
 
     #region In-Game
 
-    public static readonly Vector2 InGameViewportVerticalRange = new ( -2.75f, 4.75f );
+    public static readonly Vector2 InGameViewportVerticalRange = new ( -2.55f, 4.45f );
 
-    public static bool IsPointYInsideInGameViewport ( float pointY ) => pointY > InGameViewportVerticalRange.x && pointY < InGameViewportVerticalRange.y;
+    public static bool IsPointYInGameViewport ( float pointY ) => pointY > InGameViewportVerticalRange.x && pointY < InGameViewportVerticalRange.y;
 
     public static readonly Vector2 ObstacleGapWidthRange = new ( 1.5f, 7.5f );
 

@@ -14,7 +14,9 @@ public class HUDManager : MonoBehaviour
 
     public static event Action OnResumePressedAction;
 
-    public static event Action<float> AdjustVolumeAAction;
+    public static event Action<float> AdjustVolumeAction;
+
+    public static event Action<float> AdjustSensitivityAction;
 
     #endregion
     
@@ -45,13 +47,21 @@ public class HUDManager : MonoBehaviour
 
     [ SerializeField ] private Sprite heartFilledIcon;
 
-    [ Header ( "Music Progress" ) ]
+    [ Header ( "Sensitivity" ) ]
+
+    [ SerializeField ] private Slider sensitivitySlider;
+
+    [ Header ( "Volume" ) ]
+
+    [ SerializeField ] private Slider volumeSlider;
+
+    [ Header ( "Bottom Panel" ) ]
 
     [ SerializeField ] private Slider musicProgressSlider;
 
-    [ Header ( "Time display" ) ]
-
     [ SerializeField ] private TextMeshProUGUI timeDisplayLabel;
+
+    [ SerializeField ] private TextMeshProUGUI collectibleCountDisplayLabel;
 
     [ Header ( "Transition" ) ]
 
@@ -66,7 +76,10 @@ public class HUDManager : MonoBehaviour
     private StartButtonState _startButtonState;
 
     private IEnumerator _timeDisplayCoroutine;
+
     private int _currentTimeInSeconds;
+
+    private int _currentCollectibleCount;
 
     #endregion
 
@@ -82,16 +95,19 @@ public class HUDManager : MonoBehaviour
         switch ( _startButtonState ) 
         {
             case StartButtonState.Start:
+                // SoundManager.Instance.Play ( SoundType.UIClicked );
+                
                 _startButtonState = StartButtonState.Pause;
                 startButtonIcon.sprite = pauseIcon;
                 startButtonIcon.color = Constants.ThemeOrangeColor;
 
-                _currentTimeInSeconds = 0;
                 _timeDisplayCoroutine = RunTimer ( );
                 StartCoroutine ( _timeDisplayCoroutine );
+                UpdateCollectibleCountDisplay ( );
+
+                pauseBlockPanel.SetActive ( false );
 
                 OnStartPressedAction?.Invoke ( );
-                pauseBlockPanel.SetActive ( false );
 
                 break;
 
@@ -103,27 +119,33 @@ public class HUDManager : MonoBehaviour
                 startButtonIcon.color = Constants.ThemeOrangeColor;
 
                 StopCoroutine ( _timeDisplayCoroutine );
+
+                pauseBlockPanel.SetActive ( true );
                 
                 OnPausePressedAction?.Invoke ( );
-                pauseBlockPanel.SetActive ( true );
 
                 break;
 
             case StartButtonState.Play:
+                // SoundManager.Instance.Play ( SoundType.UIClicked );
+                
                 _startButtonState = StartButtonState.Pause;
                 startButtonIcon.sprite = pauseIcon;
                 startButtonIcon.color = Constants.ThemeOrangeColor;
 
                 StartCoroutine ( _timeDisplayCoroutine );
+
+                pauseBlockPanel.SetActive ( false );
                 
                 OnResumePressedAction?.Invoke ( );
-                pauseBlockPanel.SetActive ( false );
             
                 break;
         }
     }
 
-    public void OnVolumeBarValueChanged ( float newValue ) => AdjustVolumeAAction?.Invoke ( newValue );
+    public void OnVolumeBarValueChanged ( float newValue ) => AdjustVolumeAction?.Invoke ( newValue );
+
+    public void OnSensitivityBarValueChanged ( float newValue ) => AdjustSensitivityAction?.Invoke ( newValue );
 
     public void OnPreviousButtonPressed ( ) { }
 
@@ -138,19 +160,26 @@ public class HUDManager : MonoBehaviour
 
     private void Awake ( ) 
     {
-        // GameManager.ShowTransitionAction += transition.FadeIn;
-        GameManager.OnGameEndAction += SetStateToRestart;
+        GameManager.OnGameEndAction += OnGameEnd;
+
+        Collectible.OnPlayerHitAction += UpdateCollectibleCountDisplay;
     }
     
     private void OnDestroy ( ) 
     {
-        // GameManager.ShowTransitionAction -= transition.FadeIn;
-        GameManager.OnGameEndAction -= SetStateToRestart;
+        GameManager.OnGameEndAction -= OnGameEnd;
+
+        Collectible.OnPlayerHitAction += UpdateCollectibleCountDisplay;
     }
 
-    private void Start ( ) => musicProgressSlider.value = 0;
+    private void Start ( ) 
+    {
+        AdjustSensitivityAction?.Invoke ( sensitivitySlider.value );
+        
+        AdjustVolumeAction?.Invoke ( volumeSlider.value );
+    }
 
-    private void SetStateToRestart ( ) 
+    private void OnGameEnd ( ) 
     {
         _startButtonState = StartButtonState.Start;
         startButtonIcon.sprite = restartIcon;
@@ -159,7 +188,13 @@ public class HUDManager : MonoBehaviour
         StopCoroutine ( _timeDisplayCoroutine );
         
         pauseBlockPanel.SetActive ( true );
+
+        _currentTimeInSeconds = 0;
+        _currentCollectibleCount = 0;
     }
+
+
+    #region Helpers
 
     private IEnumerator RunTimer ( ) 
     {
@@ -182,6 +217,14 @@ public class HUDManager : MonoBehaviour
                                     ( minutes < 10 ? "0" : "" ) + minutes + ":" + 
                                     ( seconds < 10 ? "0" : "" ) + seconds;
     }
+
+    private void UpdateCollectibleCountDisplay ( ) 
+    {
+        collectibleCountDisplayLabel.text = $"Collectibles: {_currentCollectibleCount}";
+    }
+
+    #endregion
+
 
     #endregion
 }

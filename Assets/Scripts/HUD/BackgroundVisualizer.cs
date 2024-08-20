@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BackgroundVisualizer : MonoBehaviour
 {
@@ -6,13 +7,17 @@ public class BackgroundVisualizer : MonoBehaviour
 
     [ SerializeField ] private GameObject barPrefab;
 
-    [ SerializeField ] private int barCount;
+    [ SerializeField ] [ Range ( 0, 500 ) ] private int barCount;
 
-    [ SerializeField ] private float smoothingValue;
+    [ SerializeField ] [ Range ( 0, 255 ) ] private int barOpacity;
 
-    [ SerializeField ] private float barHeightMultiplier;
+    [ SerializeField ] [ Range ( 0, 1000 ) ] private float barMaxHeight;
+
+    [ SerializeField ] [ Range ( 0, 5 ) ] private float smoothingValue;
+
+    [ SerializeField ] [ Range ( 0, 500 ) ] private float barHeightMultiplier;
     
-    [ SerializeField ] private float logCoeff;
+    [ SerializeField ] [ Range ( 0, 20000 ) ] private float normalizerCoeff;
 
     private RectTransform [ ] _bars;
 
@@ -50,7 +55,10 @@ public class BackgroundVisualizer : MonoBehaviour
         _smoothedValues = new float [ barCount ];
 
         for ( var i = 0; i < _bars.Length; i++ ) 
+        {
             _bars [ i ] = Instantiate ( barPrefab, transform ).GetComponent<RectTransform> ( );
+            _bars [ i ].GetComponent<Image> ( ).color = new Color ( Constants.ThemeOrangeColor.r, Constants.ThemeOrangeColor.g, Constants.ThemeOrangeColor.b, barOpacity / 255.0f );
+        }
     }
 
     private void StartTrack ( AudioSource track ) 
@@ -86,7 +94,7 @@ public class BackgroundVisualizer : MonoBehaviour
 
                 _smoothedValues [ i ] = Mathf.Lerp ( 
                     _smoothedValues [ i ], 
-                    Mathf.Clamp ( Mathf.Log ( ( averageValue * logCoeff ) + 1 ) * barHeightMultiplier, 0, Screen.height * 0.75f ), 
+                    Mathf.Clamp ( Mathf.Log ( ( averageValue * normalizerCoeff ) + 1 ) * barHeightMultiplier, 0, barMaxHeight ), 
                     smoothingValue 
                 );
 

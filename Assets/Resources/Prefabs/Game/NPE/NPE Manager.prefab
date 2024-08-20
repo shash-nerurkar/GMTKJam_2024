@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1433678513303237477}
   - component: {fileID: 1433678513303237478}
   m_Layer: 0
-  m_Name: Obstacle Manager
+  m_Name: NPE Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,17 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 2230471917689215935, guid: eaa282adc142c1c4b950881323dc0b4f, type: 3}
-  obstacleMoveSpeed: 10
-  obstaclePairSpawnDatas:
-  - gapWidth: 5.5
-    isTop: 0
-    delayAfterInSeconds: 2.5
-  - gapWidth: 3.5
-    isTop: 0
-    delayAfterInSeconds: 4.5
-  - gapWidth: 2.5
-    isTop: 0
-    delayAfterInSeconds: 2.5
-  - gapWidth: 1.5
-    isTop: 0
-    delayAfterInSeconds: 2.5
+  collectiblePrefab: {fileID: 2230471917689215935, guid: 653ceb849b3179240ac7fffa87f365cf, type: 3}

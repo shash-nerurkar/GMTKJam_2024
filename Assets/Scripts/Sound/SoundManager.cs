@@ -43,7 +43,7 @@ public class SoundManager : MonoBehaviour
 
         HUDManager.OnPausePressedAction += PauseMusic;
         HUDManager.OnResumePressedAction += ResumeMusic;
-        HUDManager.AdjustVolumeAAction += AdjustVolume;
+        HUDManager.AdjustVolumeAction += AdjustVolume;
     }
 
     private void OnDestroy ( ) 
@@ -53,7 +53,7 @@ public class SoundManager : MonoBehaviour
 
         HUDManager.OnPausePressedAction -= PauseMusic;
         HUDManager.OnResumePressedAction -= ResumeMusic;
-        HUDManager.AdjustVolumeAAction -= AdjustVolume;
+        HUDManager.AdjustVolumeAction -= AdjustVolume;
     }
 
     private void AdjustVolume ( float fraction ) 

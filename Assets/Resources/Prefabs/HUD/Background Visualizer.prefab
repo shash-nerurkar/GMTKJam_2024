@@ -85,9 +85,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba91504480c157f40a6ce89eeff8d59d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTrack: {fileID: 0}
   barPrefab: {fileID: 2230471917689215935, guid: c839e556f7a7cf640a21d4b1cadde0a9, type: 3}
   barCount: 200
-  smoothingValue: 0.15
-  barHeightMultiplier: 100
-  logCoeff: 2000
+  barOpacity: 40
+  smoothingValue: 0.14
+  barHeightMultiplier: 125
+  barMaxHeight: 320
+  normalizerCoeff: 3305

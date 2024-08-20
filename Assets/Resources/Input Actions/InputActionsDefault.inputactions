@@ -60,6 +60,39 @@
                 },
                 {
                     "name": "1D Axis",
+                    "id": "df46ebfa-86e6-429f-9be0-a8e739e8ec88",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetScaleDirection",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "4536dbe5-c8b1-4be0-8e3e-26c394561ad8",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetScaleDirection",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "5719d81a-4e47-4a79-99c1-1c4342d409da",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetScaleDirection",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
                     "id": "41b92893-a000-410d-91b8-14bf0bba0755",
                     "path": "1DAxis",
                     "interactions": "",

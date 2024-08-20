@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour
 
     public static event Action OnGameEndAction;
 
-    // public static event Action<float, float, Action> ShowTransitionAction;
-
     #endregion
 
 
@@ -34,12 +32,7 @@ public class GameManager : MonoBehaviour
         Obstacle.OnPlayerHitAction -= EndGame;
     }
 
-    private void Start ( ) 
-    {
-        Time.timeScale = 0f;
-        
-        // ShowTransitionAction?.Invoke ( 0f, 1f, ( ) => { } );
-    }
+    private void Start ( ) => Time.timeScale = 0f;
 
     private void StartGame ( ) 
     {
