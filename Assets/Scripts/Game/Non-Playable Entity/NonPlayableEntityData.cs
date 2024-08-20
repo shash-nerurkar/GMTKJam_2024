@@ -161,6 +161,21 @@ public partial class NonPlayableEntityManager
     private readonly List<NPESpawnPattern> _collectibleOnlyPatterns = new ( ) { 
         new NPESpawnPattern ( 
             obstacleDatas: new ( ) {
+                new ( 6.5f, true, 1.8f ),
+                new ( 3.5f, true, 8f ), 
+            },
+            collectibleDatas : new ( ) {
+                new ( -3, 1 ),
+                new ( 3, 1 ),
+                new ( 3, 1f ),
+                new ( -3, 1.5f ),
+                new ( 2, 0 ),
+                new ( -2, 1.5f ),
+            }
+        ),
+        
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
                 new ( 3.5f, false, 0f ),
                 new ( 7f, true, 2f ),
                 new ( 5.5f, false, 0f ),
@@ -178,7 +193,6 @@ public partial class NonPlayableEntityManager
                 new ( 1.25f, 2 ),
             }
         ),
-        
     };
 
     private NPESpawnPattern GetRandomSpawnPattern ( List<NPESpawnPattern> spawnPattern ) => spawnPattern [ Random.Range ( 0, spawnPattern.Count ) ];
@@ -188,7 +202,9 @@ public partial class NonPlayableEntityManager
 
     #region NPE Speed Scaling
 
-    private const float NPEInitialMoveSpeed = 8f;
+    private const float NPEInitialMoveSpeed = 7f;
+
+    private const float NPEMaxSpeedScale = 1.75f;
 
     #endregion
 }

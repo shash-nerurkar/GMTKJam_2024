@@ -31,8 +31,6 @@ public static class Constants
 
     public static readonly Vector2 ObstacleGapWidthRange = new ( 1.5f, 7.5f );
 
-    public static readonly float NPESpeedMaxScale = 1.5f;
-
     #endregion
 
 

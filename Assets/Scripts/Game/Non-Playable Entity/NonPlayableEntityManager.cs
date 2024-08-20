@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,7 +7,9 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 {
     #region Actions
 
-    public static event Action<float, int> ShowRatingAction;
+    public static event Action<int, int> OnCollectibleCollectedAction;
+
+    public static event Action<float, float, int, int> ShowRatingAction;
 
     #endregion
 
@@ -42,13 +43,15 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 
     private IEnumerator _scaleNPESpeedCoroutine;
 
+    private int _timeElapsedInSeconds;
+
     private int _currentDifficulty = 1;
 
     private float _currentNPESpeedScale = 1;
 
-    private int _currentCollectibleSpawnCount;
+    private int _currentCollectibleCollectedCount;
 
-    private int _timeElapsedInSeconds;
+    private int _currentCollectibleSpawnCount;
 
     #endregion
 
@@ -59,12 +62,16 @@ public partial class NonPlayableEntityManager : MonoBehaviour
     {
         GameManager.OnGameStartAction += StartGame;
         GameManager.OnGameEndAction += EndGame;
+
+        Collectible.OnPlayerHitAction += OnCollectibleCollected;
     }
 
     private void OnDestroy ( ) 
     {
         GameManager.OnGameStartAction -= StartGame;
         GameManager.OnGameEndAction -= EndGame;
+
+        Collectible.OnPlayerHitAction -= OnCollectibleCollected;
         
         if ( _spawnNPEsCoroutine != null ) 
             StopCoroutine ( _spawnNPEsCoroutine );
@@ -106,12 +113,20 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         if ( _scaleNPESpeedCoroutine != null ) 
             StopCoroutine ( _scaleNPESpeedCoroutine );
 
-        ShowRatingAction?.Invoke ( _currentNPESpeedScale, _currentCollectibleSpawnCount );
+        ShowRatingAction?.Invoke ( _currentNPESpeedScale, NPEMaxSpeedScale, _currentCollectibleCollectedCount, _currentCollectibleSpawnCount );
 
+        _timeElapsedInSeconds = 0;
         _currentDifficulty = 1;
         _currentNPESpeedScale = 1;
+        _currentCollectibleCollectedCount = 0;
         _currentCollectibleSpawnCount = 0;
-        _timeElapsedInSeconds = 0;
+    }
+
+    private void OnCollectibleCollected ( ) 
+    {
+        ++_currentCollectibleCollectedCount;
+
+        OnCollectibleCollectedAction?.Invoke ( _currentCollectibleCollectedCount, _currentCollectibleSpawnCount );
     }
 
 
@@ -208,7 +223,7 @@ public partial class NonPlayableEntityManager : MonoBehaviour
                 
                 case 3:
                     _currentDifficulty = 1;
-                    
+
                     var randomVal = Random.Range ( 0.0f, 1.0f );
 
                     if ( randomVal < 0.5f ) 
@@ -233,7 +248,7 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 
         while ( true ) 
         {
-            _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + initialScaleIncrement, Constants.NPESpeedMaxScale );
+            _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + initialScaleIncrement, NPEMaxSpeedScale );
             ++_timeElapsedInSeconds;
 
             Debug.Log ( _currentNPESpeedScale );

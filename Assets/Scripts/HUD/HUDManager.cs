@@ -94,8 +94,6 @@ public class HUDManager : MonoBehaviour
 
     private int _currentTimeInSeconds;
 
-    private int _currentCollectibleCount;
-
     private Sequence _showRatingScaleUpSequence;
 
     private Sequence _showRatingScaleDownSequence;
@@ -130,7 +128,7 @@ public class HUDManager : MonoBehaviour
                 _timeDisplayCoroutine = RunTimer ( );
                 StartCoroutine ( _timeDisplayCoroutine );
 
-                UpdateCollectibleCountDisplay ( );
+                UpdateCollectibleCountDisplay ( 0, 0 );
                 HideRating ( );
 
                 pauseBlockPanel.SetActive ( false );
@@ -190,18 +188,16 @@ public class HUDManager : MonoBehaviour
     {
         GameManager.OnGameEndAction += OnGameEnd;
 
-        Collectible.OnPlayerHitAction += OnCollectibleCollected;
-
         NonPlayableEntityManager.ShowRatingAction += ShowRating;
+        NonPlayableEntityManager.OnCollectibleCollectedAction += UpdateCollectibleCountDisplay;
     }
     
     private void OnDestroy ( ) 
     {
         GameManager.OnGameEndAction -= OnGameEnd;
 
-        Collectible.OnPlayerHitAction -= OnCollectibleCollected;
-
         NonPlayableEntityManager.ShowRatingAction -= ShowRating;
+        NonPlayableEntityManager.OnCollectibleCollectedAction -= UpdateCollectibleCountDisplay;
 
         if ( _showRatingScaleUpSequence.IsActive ( ) ) 
             _showRatingScaleUpSequence.Kill ( );
@@ -228,13 +224,6 @@ public class HUDManager : MonoBehaviour
         pauseBlockPanel.SetActive ( true );
 
         _currentTimeInSeconds = 0;
-        _currentCollectibleCount = 0;
-    }
-
-    private void OnCollectibleCollected ( ) 
-    {
-        ++_currentCollectibleCount;
-        UpdateCollectibleCountDisplay ( );
     }
 
 
@@ -262,18 +251,13 @@ public class HUDManager : MonoBehaviour
                                     ( seconds < 10 ? "0" : "" ) + seconds;
     }
 
-    private void UpdateCollectibleCountDisplay ( ) 
-    {
-        collectibleCountLabel.text = $":{_currentCollectibleCount}";
-    }
-
-    private void ShowRating ( float NPESpeedScale, int collectibleSpawnCount ) 
+    private void ShowRating ( float NPESpeedScale, float NPESpeedMaxScale, int collectibleCollectedCount, int collectibleSpawnCount ) 
     {
         ratingStarsPanel.SetActive ( true );
 
         var rating = 0.0f;
-        rating += 2.5f * ( ( NPESpeedScale - 1.0f ) / ( Constants.NPESpeedMaxScale - 1.0f ) );
-        rating += 2.5f * ( collectibleSpawnCount == 0 ? 0 : ( ( float ) _currentCollectibleCount / collectibleSpawnCount ) );
+        rating += 4f * ( ( NPESpeedScale - 1.0f ) / ( NPESpeedMaxScale - 1.0f ) );
+        rating += 1f * ( collectibleSpawnCount == 0 ? 0 : ( ( float ) collectibleCollectedCount / collectibleSpawnCount ) );
 
         _showRatingScaleUpSequence = DOTween.Sequence ( );
         _showRatingScaleDownSequence = DOTween.Sequence ( );
@@ -318,6 +302,11 @@ public class HUDManager : MonoBehaviour
             ratingStars [ i ].transform.localScale = Vector3.one;
             ratingStars [ i ].sprite = ratingStarEmpty;
         }
+    }
+
+    private void UpdateCollectibleCountDisplay ( int collectedCollectibleCount, int totalCollectibleCount ) 
+    {
+        collectibleCountLabel.text = $"{collectedCollectibleCount}/{totalCollectibleCount}";
     }
 
     #endregion
