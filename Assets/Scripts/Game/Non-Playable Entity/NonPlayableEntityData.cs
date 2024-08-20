@@ -186,9 +186,9 @@ public partial class NonPlayableEntityManager
                 new ( 4.5f, true, 3f ),
             },
             collectibleDatas : new ( ) {
-                new ( 0.76f, 2 ),
-                new ( -1.63f, 2 ),
-                new ( 0.81f, 1.2f ),
+                new ( 1.0f, 2 ),
+                new ( -1.5f, 2 ),
+                new ( 1.0f, 1.2f ),
                 new ( -1.25f, 2 ),
                 new ( 1.25f, 2 ),
             }
