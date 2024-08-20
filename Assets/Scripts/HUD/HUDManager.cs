@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,9 @@ public class HUDManager : MonoBehaviour
 
     #region Fields
 
+
+    #region Serialized
+
     [ Header ( "Top Panel" ) ]
 
     [ SerializeField ] private GameObject pauseBlockPanel;
@@ -41,11 +45,7 @@ public class HUDManager : MonoBehaviour
     
     [ Header ( "Heart button" ) ]
 
-    [ SerializeField ] private Image heartButtonIcon;
-
-    [ SerializeField ] private Sprite heartEmptyIcon;
-
-    [ SerializeField ] private Sprite heartFilledIcon;
+    [ SerializeField ] private Animator heartButtonAnimator;
 
     [ Header ( "Sensitivity" ) ]
 
@@ -63,11 +63,18 @@ public class HUDManager : MonoBehaviour
 
     [ SerializeField ] private TextMeshProUGUI collectibleCountLabel;
 
-    [ SerializeField ] private TextMeshProUGUI ratingLabel;
+    [ SerializeField ] private Image [ ] ratingStars;
+
+    [ SerializeField ] private Sprite ratingStarEmpty;
+    
+    [ SerializeField ] private Sprite ratingStarFilled;
 
     [ Header ( "Transition" ) ]
 
     [ SerializeField ] private Transition transition;
+
+    #endregion
+
 
     private enum StartButtonState
     {
@@ -83,6 +90,10 @@ public class HUDManager : MonoBehaviour
 
     private int _currentCollectibleCount;
 
+    private Sequence _showRatingScaleUpSequence;
+
+    private Sequence _showRatingScaleDownSequence;
+
     #endregion
 
     
@@ -97,7 +108,7 @@ public class HUDManager : MonoBehaviour
         switch ( _startButtonState ) 
         {
             case StartButtonState.Start:
-                // SoundManager.Instance.Play ( SoundType.UIClicked );
+                SoundManager.Instance.Play ( SoundType.GameStarted );
                 
                 _startButtonState = StartButtonState.Pause;
                 startButtonIcon.sprite = pauseIcon;
@@ -116,7 +127,7 @@ public class HUDManager : MonoBehaviour
                 break;
 
             case StartButtonState.Pause:
-                SoundManager.Instance.Play ( SoundType.UIClicked );
+                SoundManager.Instance.Play ( SoundType.GamePaused );
                 
                 _startButtonState = StartButtonState.Play;
                 startButtonIcon.sprite = playIcon;
@@ -131,7 +142,7 @@ public class HUDManager : MonoBehaviour
                 break;
 
             case StartButtonState.Play:
-                // SoundManager.Instance.Play ( SoundType.UIClicked );
+                SoundManager.Instance.Play ( SoundType.GameResumed );
                 
                 _startButtonState = StartButtonState.Pause;
                 startButtonIcon.sprite = pauseIcon;
@@ -155,7 +166,7 @@ public class HUDManager : MonoBehaviour
 
     public void OnNextButtonPressed ( ) { }
 
-    public void OnHeartButtonPressed ( ) => heartButtonIcon.sprite = heartButtonIcon.sprite.Equals ( heartEmptyIcon ) ? heartFilledIcon : heartEmptyIcon;
+    public void OnHeartButtonPressed ( ) => heartButtonAnimator.SetInteger ( "IsFilled", heartButtonAnimator.GetInteger ( "IsFilled" ).Equals ( 1 ) ? -1 : 1 );
 
     public void OnStatsForNerdsButtonPressed ( ) { }
 
@@ -178,6 +189,12 @@ public class HUDManager : MonoBehaviour
         Collectible.OnPlayerHitAction -= OnCollectibleCollected;
 
         NonPlayableEntityManager.ShowRatingAction -= ShowRating;
+
+        if ( _showRatingScaleUpSequence.IsActive ( ) ) 
+            _showRatingScaleUpSequence.Kill ( );
+
+        if ( _showRatingScaleDownSequence.IsActive ( ) ) 
+            _showRatingScaleDownSequence.Kill ( );
     }
 
     private void Start ( ) 
@@ -234,23 +251,43 @@ public class HUDManager : MonoBehaviour
 
     private void UpdateCollectibleCountDisplay ( ) 
     {
-        collectibleCountLabel.text = $"Collectibles: {_currentCollectibleCount}";
+        collectibleCountLabel.text = $":{_currentCollectibleCount}";
     }
 
     private void ShowRating ( float NPESpeedScale, int collectibleSpawnCount ) 
     {
-        ratingLabel.gameObject.SetActive ( true );
-
         var rating = 0.0f;
         rating += 2.5f * ( ( NPESpeedScale - 1.0f ) / ( Constants.NPESpeedMaxScale - 1.0f ) );
-        rating += collectibleSpawnCount == 0 ? 0 : 2.5f * ( ( float ) _currentCollectibleCount / collectibleSpawnCount );
+        rating += 2.5f * ( collectibleSpawnCount == 0 ? 1 : ( ( float ) _currentCollectibleCount / collectibleSpawnCount ) );
+
+        _showRatingScaleUpSequence = DOTween.Sequence ( ); //.SetDelay ( 1.0f );
+        _showRatingScaleDownSequence = DOTween.Sequence ( ); //.SetDelay ( 2.0f );
+        var sequenceSpeed = 0.5f;
         
-        ratingLabel.text = $"Rating: { Math.Truncate ( rating * 10 ) / 10.0f } / 5.0";
+        for ( int i = 0; i < rating; i++ ) 
+            _showRatingScaleUpSequence.Join ( ratingStars [ i ].transform.DOScale ( 1.5f, sequenceSpeed ) ) 
+                .OnComplete ( ( ) => { 
+                    ratingStars [ i ].sprite = ratingStarFilled;
+                    _showRatingScaleDownSequence.Join ( ratingStars [ i ].transform.DOScale ( 1f, sequenceSpeed ) );
+                } );
+        
+        _showRatingScaleUpSequence.Play ( )
+            .OnComplete ( ( ) => _showRatingScaleDownSequence.Play ( ) );
     }
 
     private void HideRating ( ) 
     {
-        ratingLabel.gameObject.SetActive ( false );
+        if ( _showRatingScaleUpSequence.IsActive ( )  ) 
+            _showRatingScaleUpSequence.Kill ( );
+        
+        if ( _showRatingScaleDownSequence.IsActive ( )  ) 
+            _showRatingScaleDownSequence.Kill ( );
+
+        for ( int i = 0; i < ratingStars.Length; i++ ) 
+        {
+            ratingStars [ i ].transform.localScale = Vector3.one;
+            ratingStars [ i ].sprite = ratingStarEmpty;
+        }
     }
 
     #endregion

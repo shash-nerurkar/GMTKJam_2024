@@ -50,7 +50,7 @@ public class BackgroundVisualizer : MonoBehaviour
     
     private void Initialize ( ) 
     {
-        _spectrumData = new float [ ( int ) Mathf.Pow ( 2, ( int ) Mathf.Log ( barCount + 1, 2 ) + 1 ) ];
+        _spectrumData = new float [ Mathf.Min ( ( int ) Mathf.Pow ( 2, ( int ) Mathf.Log ( barCount + 1, 2 ) + 1 ), 64 ) ];
         _bars = new RectTransform [ barCount ];
         _smoothedValues = new float [ barCount ];
 
@@ -70,10 +70,17 @@ public class BackgroundVisualizer : MonoBehaviour
     {
         _currentTrack = null;
 
-        foreach ( var bar in _bars ) 
-            Destroy ( bar.gameObject );
+        if ( _bars != null ) 
+        {
+            foreach ( var bar in _bars ) 
+            {
+                if ( bar != null ) 
+                    Destroy ( bar.gameObject );
+            }
+            
+            _bars = null;
+        }
         
-        _bars = null;
         _spectrumData = null;
         _smoothedValues = null;
     }

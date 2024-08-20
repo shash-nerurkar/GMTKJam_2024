@@ -63,6 +63,8 @@ public class Player : MonoBehaviour
 
         Obstacle.OnPlayerHitAction += Kill;
 
+        Collectible.OnPlayerHitAction += Collect;
+
         HUDManager.AdjustSensitivityAction += AdjustScaleSensitivity;
 
         _basePosition = transform.position;
@@ -78,6 +80,8 @@ public class Player : MonoBehaviour
 
         Obstacle.OnPlayerHitAction -= Kill;
 
+        Collectible.OnPlayerHitAction -= Collect;
+
         HUDManager.AdjustSensitivityAction -= AdjustScaleSensitivity;
     }
 
@@ -91,13 +95,20 @@ public class Player : MonoBehaviour
         peripheralsTopPivotTransform.localScale = Vector3.one;
         peripheralsBottomPivotTransform.localScale = Vector3.one;
     }
-    
+
     private void Kill ( ) 
     {
+        SoundManager.Instance.Play ( SoundType.PlayerHitObstacle );
+
         faceSpriteRenderer.sprite = expressionDyingSprite;
         
         _scaleTweenSequence.Kill ( );
         _scaleExpressionTween.Kill ( );
+    }
+    
+    private void Collect ( ) 
+    {
+        SoundManager.Instance.Play ( SoundType.PlayerHitCollectible );
     }
 
     private void AdjustScaleSensitivity ( float fraction ) => _currentScaleSensitivity = fraction;

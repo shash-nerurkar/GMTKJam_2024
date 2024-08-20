@@ -194,11 +194,17 @@ public partial class NonPlayableEntityManager : MonoBehaviour
 
     private IEnumerator ScaleNPEMoveSpeed ( ) 
     {
+        var initialScaleIncrement = 0.0005f;
+        float startTime = Time.time;
+
         while ( true ) 
         {
-            _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + 0.1f, Constants.NPESpeedMaxScale );
+            initialScaleIncrement *= Mathf.Exp ( 0.1f * ( Time.time - startTime ) );
+            _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + initialScaleIncrement, Constants.NPESpeedMaxScale );
 
-            yield return new WaitForSeconds ( 30 );
+            Debug.Log ( _currentNPESpeedScale );
+            
+            yield return new WaitForSeconds ( 1 );
         }
     }
 

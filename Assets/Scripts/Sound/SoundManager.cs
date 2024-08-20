@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -94,21 +95,15 @@ public class SoundManager : MonoBehaviour
     {
         Stop ( MusicType.TrackDnB );
 
-        foreach ( var sound in sounds.Where ( s => s.IsPlaying ) ) 
+        foreach ( var sound in sounds.Where ( s => s.IsPlaying && s.Type != SoundType.PlayerHitObstacle ) ) 
             sound.Stop ( );
 
         StopVisualizingTrackAction?.Invoke ( );
     }
 
-    private void PauseMusic ( ) 
-    {
-        Pause ( MusicType.TrackDnB );
-    }
+    private void PauseMusic ( ) => Pause ( MusicType.TrackDnB );
 
-    private void ResumeMusic ( ) 
-    {
-        Resume ( MusicType.TrackDnB );
-    }
+    private void ResumeMusic ( ) => DOVirtual.DelayedCall ( 0.25f, ( ) => Resume ( MusicType.TrackDnB ) );
 
     private void Play ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.FadeInPlay ( );
 

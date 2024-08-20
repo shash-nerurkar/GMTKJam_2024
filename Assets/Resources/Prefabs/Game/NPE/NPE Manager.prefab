@@ -47,25 +47,5 @@ MonoBehaviour:
   obstaclePrefab: {fileID: 2230471917689215935, guid: eaa282adc142c1c4b950881323dc0b4f, type: 3}
   collectiblePrefab: {fileID: 2230471917689215935, guid: 653ceb849b3179240ac7fffa87f365cf, type: 3}
   testPattern:
-    obstacleDatas:
-    - gapWidth: 5.5
-      isTop: 0
-      delayAfterInSeconds: 2.5
-    - gapWidth: 3.5
-      isTop: 0
-      delayAfterInSeconds: 4.5
-    - gapWidth: 2.5
-      isTop: 0
-      delayAfterInSeconds: 2.5
-    - gapWidth: 1.5
-      isTop: 0
-      delayAfterInSeconds: 4
-    collectibleDatas:
-    - positionY: 0
-      delayAfterInSeconds: 2.5
-    - positionY: 1
-      delayAfterInSeconds: 4.5
-    - positionY: 2
-      delayAfterInSeconds: 2.5
-    - positionY: 3
-      delayAfterInSeconds: 4
+    obstacleDatas: []
+    collectibleDatas: []

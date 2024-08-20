@@ -45,34 +45,104 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
+  - clip: {fileID: 8300000, guid: f60de2d4bf509bd42ae415ff9dc36dd8, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 0
   - clip: {fileID: 8300000, guid: 26d28545b6800124ba393453bf238b8e, type: 3}
     volume: 0.4
     pitch: 0.5
     isLoop: 0
-    type: 0
-  - clip: {fileID: 8300000, guid: b91e11f9ee8f0d94cb7c856a09f09682, type: 3}
-    volume: 1
-    pitch: 1
-    isLoop: 0
     type: 1
-  - clip: {fileID: 8300000, guid: 127260308e21a6141961df99e3d5e9b0, type: 3}
+  - clip: {fileID: 8300000, guid: d3fb355c03863ca4382baa6899a9843c, type: 3}
     volume: 1
     pitch: 1
     isLoop: 0
     type: 2
-  - clip: {fileID: 8300000, guid: 928054621b216474fbbed0d6983b0912, type: 3}
+  - clip: {fileID: 8300000, guid: e760d20e8de99ba49a2b1b1178837eae, type: 3}
     volume: 1
     pitch: 1
     isLoop: 0
     type: 3
-  musics:
-  - clip: {fileID: 8300000, guid: 516e0faac2b0eff41b5ca6c50a6f4e4f, type: 3}
+  - clip: {fileID: 8300000, guid: 3f00d3f9d413bab4dbc97a73f35469f6, type: 3}
     volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 4
+  - clip: {fileID: 8300000, guid: 72499fe0948bce249b453742f24b5d00, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 5
+  - clip: {fileID: 8300000, guid: b91e11f9ee8f0d94cb7c856a09f09682, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 6
+  - clip: {fileID: 8300000, guid: 127260308e21a6141961df99e3d5e9b0, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 7
+  - clip: {fileID: 8300000, guid: 928054621b216474fbbed0d6983b0912, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 8
+  - clip: {fileID: 8300000, guid: c0cbbf0236d204c4286a7845482bd164, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 9
+  - clip: {fileID: 8300000, guid: 5ea378ce21473cf48bfab84c5af9471e, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 10
+  - clip: {fileID: 8300000, guid: b1f6cb22f48a9d349a560d91cf3c8d76, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 11
+  - clip: {fileID: 8300000, guid: add66e8286dfda646849280a7e3bc25f, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 12
+  - clip: {fileID: 8300000, guid: 1320a077ceac00248aa08c8df2bff479, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 13
+  - clip: {fileID: 8300000, guid: cb0197365d8a34c46ae60cdd5163e515, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 14
+  - clip: {fileID: 8300000, guid: d9a217e94ae56594fb8e701ea5a3668e, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 15
+  - clip: {fileID: 8300000, guid: 7cfefe14885b009438fa949a93233643, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 16
+  - clip: {fileID: 8300000, guid: e80a7f95de3ea854a89cacef08f786ee, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    type: 17
+  musics:
+  - clip: {fileID: 8300000, guid: 220dd59bb62459744959d393225f035f, type: 3}
+    volume: 0.75
     pitch: 1
     isLoop: 1
     type: 0
-  - clip: {fileID: 8300000, guid: 220dd59bb62459744959d393225f035f, type: 3}
-    volume: 1
+  - clip: {fileID: 8300000, guid: 50f7d322d3b13ae4d95b4af1e496b96b, type: 3}
+    volume: 0.75
     pitch: 1
     isLoop: 1
     type: 1

@@ -72,7 +72,13 @@ public static class Constants
 [ Serializable ]
 public enum SoundType
 {
-    UIClicked,
+    GameStarted,
+    GamePaused,
+    GameResumed,
+
+    PlayClicked,
+    PlayerHitObstacle,
+    PlayerHitCollectible,
 
     Stinger1Atmospheric,
     Stinger2Atmospheric,

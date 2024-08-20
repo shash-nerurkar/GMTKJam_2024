@@ -28,7 +28,12 @@ public partial class NonPlayableEntityManager
                 new ( 2.5f, true, 1f ),
                 new ( 1.5f, true, 4f ),
             },
-            collectibleDatas : new ( ) 
+            collectibleDatas : new ( ) {
+                new ( 3, 1 ),
+                new ( 1, 1 ),
+                new ( 1, 0.9f ),
+                new ( 2, 1 ),
+            }
         )
     };
 
@@ -45,8 +50,17 @@ public partial class NonPlayableEntityManager
                 new ( 2.5f, true, 2f ),
                 new ( 1.5f, true, 4f ),
             },
-            collectibleDatas : new ( ) 
+            collectibleDatas : new ( ) { 
+                new (  3, 2.5f ),
+                new ( -3, 2.7f ),
+                new (  0, 2f ),
+                new ( -3, 2f ),
+                new ( -3, 1.5f ),
+                new (  0, 2f ),
+                new ( -1, 2f ),
+            }
         ),
+        
         new NPESpawnPattern ( 
             obstacleDatas: new ( ) {
                 new ( 1.5f, true, 2f ),
@@ -59,7 +73,12 @@ public partial class NonPlayableEntityManager
                 new ( 1.5f, false, 2f ),
                 new ( 1.5f, true, 4f ),
             },
-            collectibleDatas : new ( ) 
+            collectibleDatas : new ( ) {
+                new ( -3, 2.5f ),
+                new ( 0, 2.5f ),
+                new ( 2, 2.5f ),
+                new ( -1, 2.5f )
+            }
         )
     };
 
@@ -75,8 +94,45 @@ public partial class NonPlayableEntityManager
                 new ( 3.5f, true, 0f ),
                 new ( 5.5f, false, 4f ),
             },
-            collectibleDatas : new ( ) 
-        )
+            collectibleDatas : new ( ) { }
+        ),
+        
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) { 
+                new ( 1.5f, true, 1.5f ),
+                new ( 2.5f, false, 0.5f ),
+                new ( 3.5f, false, 1f ),
+                new ( 2.5f, true, 1.3f ),
+                new ( 1.5f, false, 1.5f ),
+                new ( 1.5f, true, 1.5f ),
+            },
+            collectibleDatas : new ( ) { 
+                new ( -3, 1 ),
+                new (  0, 2.7f ),
+                new (  0, 1 ),
+                new (  3, 1.3f ),
+                new (  3, 0.2f ),
+                new (  3, 0.5f ),
+                new (  3, 0.5f ),
+            }
+        ),
+        
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) { 
+                new ( 2.5f, true, 1.5f ),
+                new ( 3.5f, true, 2f ),
+                new ( 2.5f, true, 1.5f ),
+                new ( 1.5f, true, 2.5f ),
+                new ( 1.5f, true, 2f ),
+                new ( 1.5f, true, 2f ),
+            },
+            collectibleDatas : new ( ) { 
+                new ( 2, 2.5f ),
+                new ( 0, 2 ),
+                new ( 2, 2.5f ),
+                new ( -1, 2.5f ),
+            }
+        ),
     };
 
     private NPESpawnPattern GetRandomSpawnPattern ( List<NPESpawnPattern> spawnPattern ) => spawnPattern [ Random.Range ( 0, spawnPattern.Count ) ];

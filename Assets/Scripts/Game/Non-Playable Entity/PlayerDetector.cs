@@ -1,21 +1,23 @@
+using System;
 using UnityEngine;
 
 public class PlayerDetector : MonoBehaviour
 {
-    #region 
+    #region Fields
 
-    private SoundType stingerType;
+    public event Action<Player> PlayerDetectedAction;
 
     #endregion
+    
 
     #region Methods
 
-    public void Initialize ( SoundType stingerType ) => this.stingerType = stingerType;
-
     private void OnTriggerEnter2D ( Collider2D other ) 
     {
-        if ( other.GetComponent<Player> ( ) != null ) 
-            SoundManager.Instance.Play ( stingerType );
+        var player = other.GetComponent<Player> ( );
+
+        if ( player != null ) 
+            PlayerDetectedAction?.Invoke ( player );
     }
 
     #endregion
