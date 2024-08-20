@@ -36,6 +36,8 @@ public class Collectible : MonoBehaviour
     {
         if ( other.GetComponent<Player> ( ) != null ) 
             OnPlayerHitAction?.Invoke ( );
+        
+        Destroy ( gameObject );
     }
 
     #endregion

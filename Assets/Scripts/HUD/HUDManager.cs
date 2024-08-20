@@ -55,13 +55,15 @@ public class HUDManager : MonoBehaviour
 
     [ SerializeField ] private Slider volumeSlider;
 
-    [ Header ( "Bottom Panel" ) ]
+    [ Header ( "Progress bar" ) ]
 
     [ SerializeField ] private Slider musicProgressSlider;
 
-    [ SerializeField ] private TextMeshProUGUI timeDisplayLabel;
+    [ SerializeField ] private TextMeshProUGUI timeLabel;
 
-    [ SerializeField ] private TextMeshProUGUI collectibleCountDisplayLabel;
+    [ SerializeField ] private TextMeshProUGUI collectibleCountLabel;
+
+    [ SerializeField ] private TextMeshProUGUI ratingLabel;
 
     [ Header ( "Transition" ) ]
 
@@ -103,7 +105,9 @@ public class HUDManager : MonoBehaviour
 
                 _timeDisplayCoroutine = RunTimer ( );
                 StartCoroutine ( _timeDisplayCoroutine );
+
                 UpdateCollectibleCountDisplay ( );
+                HideRating ( );
 
                 pauseBlockPanel.SetActive ( false );
 
@@ -162,14 +166,18 @@ public class HUDManager : MonoBehaviour
     {
         GameManager.OnGameEndAction += OnGameEnd;
 
-        Collectible.OnPlayerHitAction += UpdateCollectibleCountDisplay;
+        Collectible.OnPlayerHitAction += OnCollectibleCollected;
+
+        NonPlayableEntityManager.ShowRatingAction += ShowRating;
     }
     
     private void OnDestroy ( ) 
     {
         GameManager.OnGameEndAction -= OnGameEnd;
 
-        Collectible.OnPlayerHitAction += UpdateCollectibleCountDisplay;
+        Collectible.OnPlayerHitAction -= OnCollectibleCollected;
+
+        NonPlayableEntityManager.ShowRatingAction -= ShowRating;
     }
 
     private void Start ( ) 
@@ -193,6 +201,12 @@ public class HUDManager : MonoBehaviour
         _currentCollectibleCount = 0;
     }
 
+    private void OnCollectibleCollected ( ) 
+    {
+        ++_currentCollectibleCount;
+        UpdateCollectibleCountDisplay ( );
+    }
+
 
     #region Helpers
 
@@ -213,14 +227,30 @@ public class HUDManager : MonoBehaviour
         var minutes = ( _currentTimeInSeconds / 60 ) % 60;
         var seconds = _currentTimeInSeconds % 60;
 
-        timeDisplayLabel.text =     ( hours < 10 ? "0" : "" ) + hours + ":" + 
+        timeLabel.text =     ( hours < 10 ? "0" : "" ) + hours + ":" + 
                                     ( minutes < 10 ? "0" : "" ) + minutes + ":" + 
                                     ( seconds < 10 ? "0" : "" ) + seconds;
     }
 
     private void UpdateCollectibleCountDisplay ( ) 
     {
-        collectibleCountDisplayLabel.text = $"Collectibles: {_currentCollectibleCount}";
+        collectibleCountLabel.text = $"Collectibles: {_currentCollectibleCount}";
+    }
+
+    private void ShowRating ( float NPESpeedScale, int collectibleSpawnCount ) 
+    {
+        ratingLabel.gameObject.SetActive ( true );
+
+        var rating = 0.0f;
+        rating += 2.5f * ( ( NPESpeedScale - 1.0f ) / ( Constants.NPESpeedMaxScale - 1.0f ) );
+        rating += collectibleSpawnCount == 0 ? 0 : 2.5f * ( ( float ) _currentCollectibleCount / collectibleSpawnCount );
+        
+        ratingLabel.text = $"Rating: { Math.Truncate ( rating * 10 ) / 10.0f } / 5.0";
+    }
+
+    private void HideRating ( ) 
+    {
+        ratingLabel.gameObject.SetActive ( false );
     }
 
     #endregion

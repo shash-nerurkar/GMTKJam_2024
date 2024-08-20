@@ -1,24 +1,52 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public partial class NonPlayableEntityManager : MonoBehaviour
 {
+    #region Actions
+
+    public static event Action<float, int> ShowRatingAction;
+
+    #endregion
+
+
     #region Fields
 
     [ SerializeField ] private GameObject obstaclePrefab;
 
     [ SerializeField ] private GameObject collectiblePrefab;
 
+    [ SerializeField ] private NPESpawnPattern testPattern = new ( 
+        obstacleDatas: new ( ) { 
+            new ( 5.5f, false, 2.5f ),
+            new ( 3.5f, false, 4.5f ),
+            new ( 2.5f, false, 2.5f ),
+            new ( 1.5f, false, 4f ),
+        },
+        collectibleDatas: new ( ) { 
+            new ( 1f, 2f ),
+            new ( 2f, 4f ),
+            new ( 3f, 2f ),
+            new ( 4f, 4f ),
+        }
+    );
+
     private IEnumerator _spawnNPEsCoroutine;
+
+    private IEnumerator _spawnObstaclesCoroutine;
+
+    private IEnumerator _spawnCollectiblesCoroutine;
 
     private IEnumerator _scaleNPESpeedCoroutine;
 
     private int _currentDifficulty = 1;
 
-    private float _currentMoveSpeed;
+    private float _currentNPESpeedScale = 1;
 
-    private float _currentLifeTime;
+    private int _currentCollectibleSpawnCount;
 
     #endregion
 
@@ -39,6 +67,12 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         if ( _spawnNPEsCoroutine != null ) 
             StopCoroutine ( _spawnNPEsCoroutine );
             
+        if ( _spawnObstaclesCoroutine != null ) 
+            StopCoroutine ( _spawnObstaclesCoroutine );
+            
+        if ( _spawnCollectiblesCoroutine != null ) 
+            StopCoroutine ( _spawnCollectiblesCoroutine );
+            
         if ( _scaleNPESpeedCoroutine != null ) 
             StopCoroutine ( _scaleNPESpeedCoroutine );
     }
@@ -48,11 +82,12 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         for ( var i = 0; i < transform.childCount; i++ ) 
             Destroy ( transform.GetChild ( i ).gameObject );
         
-        // _spawnNPEsCoroutine = SpawnNPEs ( GetRandomSpawnPattern ( _tutorialPatterns ) );
-        // StartCoroutine ( _spawnNPEsCoroutine );
+        _spawnNPEsCoroutine = SpawnNPEs ( testPattern != null && !testPattern.IsEmpty ( ) 
+                                                        ? testPattern : GetRandomSpawnPattern ( _tutorialPatterns ) );
+        StartCoroutine ( _spawnNPEsCoroutine );
         
-        // _scaleNPESpeedCoroutine = ScaleNPEMoveSpeed ( );
-        // StartCoroutine ( _scaleNPESpeedCoroutine );
+        _scaleNPESpeedCoroutine = ScaleNPEMoveSpeed ( );
+        StartCoroutine ( _scaleNPESpeedCoroutine );
     }
 
     private void EndGame ( ) 
@@ -60,37 +95,76 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         if ( _spawnNPEsCoroutine != null ) 
             StopCoroutine ( _spawnNPEsCoroutine );
             
+        if ( _spawnObstaclesCoroutine != null ) 
+            StopCoroutine ( _spawnObstaclesCoroutine );
+            
+        if ( _spawnCollectiblesCoroutine != null ) 
+            StopCoroutine ( _spawnCollectiblesCoroutine );
+            
         if ( _scaleNPESpeedCoroutine != null ) 
             StopCoroutine ( _scaleNPESpeedCoroutine );
 
+        ShowRatingAction?.Invoke ( _currentNPESpeedScale, _currentCollectibleSpawnCount );
+
         _currentDifficulty = 1;
-        _currentMoveSpeed = 0;
-        _currentLifeTime = 0;
+        _currentNPESpeedScale = 1;
+        _currentCollectibleSpawnCount = 0;
     }
 
 
     #region NPE Spawning
 
-    private IEnumerator SpawnNPEs ( NPESpawnPattern pattern = null ) 
+    private IEnumerator SpawnNPEs ( NPESpawnPattern pattern = null, bool doNotFlip = false ) 
     {
         pattern ??= ChoosePatternToSpawn ( );
 
-        if ( Random.Range ( 0.0f, 1.0f ) <= 0.5f ) 
-            pattern.FlipAllObstacles ( );
+        if ( !doNotFlip && Random.Range ( 0.0f, 1.0f ) <= 0.5f ) 
+            pattern.Flip ( );
+        
+        float currentNPEMoveSpeed = NPEInitialMoveSpeed * _currentNPESpeedScale;
+        float currentNPELifeTime = 20 / currentNPEMoveSpeed;
+        
+        bool haveAllObstaclesSpawned = false;
+        _spawnObstaclesCoroutine = SpawnObstacles ( );
+        StartCoroutine ( _spawnObstaclesCoroutine );
 
-        // Instantiate ( obstaclePrefab, transform ).GetComponent<Obstacle> ( ) 
-        //     .Initialize ( obstacleSpawnData.GapWidth, obstacleSpawnData.IsTop, _currentMoveSpeed, _currentLifeTime );
+        bool haveAllCollectiblesSpawned = false;
+        _spawnCollectiblesCoroutine = SpawnCollectibles ( );
+        StartCoroutine ( _spawnCollectiblesCoroutine );
 
-        foreach ( var obstacleSpawnData in pattern.SpawnDatas ) 
-        {
-            Instantiate ( obstaclePrefab, transform ).GetComponent<Obstacle> ( ) 
-                .Initialize ( obstacleSpawnData.GapWidth, obstacleSpawnData.IsTop, _currentMoveSpeed, _currentLifeTime );
-
-            yield return new WaitForSeconds ( obstacleSpawnData.DelayAfterInSeconds );
-        }
+        yield return new WaitUntil ( ( ) => haveAllObstaclesSpawned && haveAllCollectiblesSpawned );
 
         _spawnNPEsCoroutine = SpawnNPEs ( );
         StartCoroutine ( _spawnNPEsCoroutine );
+    
+        
+        IEnumerator SpawnObstacles ( ) 
+        {
+            foreach ( var obstacleData in pattern.ObstacleDatas ) 
+            {
+                Instantiate ( obstaclePrefab, transform ).GetComponent<Obstacle> ( ) 
+                    .Initialize ( obstacleData.GapWidth, obstacleData.IsTop, currentNPEMoveSpeed, currentNPELifeTime );
+
+                yield return new WaitForSeconds ( obstacleData.DelayAfterInSeconds );
+            }
+
+            haveAllObstaclesSpawned = true;
+        }
+        
+
+        IEnumerator SpawnCollectibles ( ) 
+        {
+            foreach ( var collectibleData in pattern.CollectibleDatas ) 
+            {
+                Instantiate ( collectiblePrefab, transform ).GetComponent<Collectible> ( ) 
+                    .Initialize ( collectibleData.PositionY, currentNPEMoveSpeed, currentNPELifeTime );
+                ++_currentCollectibleSpawnCount;
+
+                yield return new WaitForSeconds ( collectibleData.DelayAfterInSeconds );
+            }
+
+            haveAllCollectiblesSpawned = true;
+        }
     }
 
     private NPESpawnPattern ChoosePatternToSpawn ( ) 
@@ -116,24 +190,16 @@ public partial class NonPlayableEntityManager : MonoBehaviour
     #endregion
 
 
-    #region NPE Speed Management
+    #region NPE Speed Scaling
 
     private IEnumerator ScaleNPEMoveSpeed ( ) 
     {
         while ( true ) 
         {
-            SetObstaclesMoveSpeed ( NPEInitialMoveSpeed );
+            _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + 0.1f, Constants.NPESpeedMaxScale );
 
             yield return new WaitForSeconds ( 30 );
         }
-    }
-
-    private void SetObstaclesMoveSpeed ( float obstacleMoveSpeed ) 
-    {
-        float obstacleTravelDistance = 20;
-
-        _currentLifeTime = obstacleTravelDistance / obstacleMoveSpeed;
-        _currentMoveSpeed = obstacleMoveSpeed;
     }
 
     #endregion

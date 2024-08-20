@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,59 +9,74 @@ public partial class NonPlayableEntityManager
     #region NPE Spawning 
 
     private readonly List<NPESpawnPattern> _tutorialPatterns = new ( ) { 
-        new NPESpawnPattern ( spawnDatas: new ( ) {
-            new ( 5.5f, false, 2.5f ),
-            new ( 3.5f, false, 4.5f ),
-            new ( 2.5f, false, 2.5f ),
-            new ( 1.5f, false, 4f ),
-        } )
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 5.5f, false, 2.5f ),
+                new ( 3.5f, false, 4.5f ),
+                new ( 2.5f, false, 2.5f ),
+                new ( 1.5f, false, 4f ),
+            },
+            collectibleDatas : new ( ) 
+        )
     };
 
     private readonly List<NPESpawnPattern> _difficulty1Patterns = new ( ) { 
-        new NPESpawnPattern ( spawnDatas: new ( ) {
-            new ( 1.5f, true, 1.5f ),
-            new ( 2.5f, false, 1f ),
-            new ( 2.5f, true, 1f ),
-            new ( 1.5f, true, 4f ),
-        } ),
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 1.5f, true, 1.5f ),
+                new ( 2.5f, false, 1f ),
+                new ( 2.5f, true, 1f ),
+                new ( 1.5f, true, 4f ),
+            },
+            collectibleDatas : new ( ) 
+        )
     };
 
     private readonly List<NPESpawnPattern> _difficulty2Patterns = new ( ) {  
-        new NPESpawnPattern ( spawnDatas: new ( ) {
-            new ( 1.5f, false, 2.5f ),
-            new ( 1.5f, true, 3.5f ),
-            new ( 3.5f, false, 2f ),
-            new ( 2.5f, false, 2f ),
-            new ( 3.5f, true, 2f ),
-            new ( 1.5f, true, 2f ),
-            new ( 3.5f, false, 2f ),
-            new ( 2.5f, true, 2f ),
-            new ( 1.5f, true, 4f ),
-        } ),
-        new NPESpawnPattern ( spawnDatas: new ( ) {
-            new ( 1.5f, true, 2f ),
-            new ( 2.5f, false, 2f ),
-            new ( 1.5f, true, 2f ),
-            new ( 2.5f, false, 2f ),
-            new ( 2.5f, true, 2f ),
-            new ( 2.5f, false, 2f ),
-            new ( 2.5f, true, 2f ),
-            new ( 1.5f, false, 2f ),
-            new ( 1.5f, true, 4f ),
-        } ),
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 1.5f, false, 2.5f ),
+                new ( 1.5f, true, 3.5f ),
+                new ( 3.5f, false, 2f ),
+                new ( 2.5f, false, 2f ),
+                new ( 3.5f, true, 2f ),
+                new ( 1.5f, true, 2f ),
+                new ( 3.5f, false, 2f ),
+                new ( 2.5f, true, 2f ),
+                new ( 1.5f, true, 4f ),
+            },
+            collectibleDatas : new ( ) 
+        ),
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 1.5f, true, 2f ),
+                new ( 2.5f, false, 2f ),
+                new ( 1.5f, true, 2f ),
+                new ( 2.5f, false, 2f ),
+                new ( 2.5f, true, 2f ),
+                new ( 2.5f, false, 2f ),
+                new ( 2.5f, true, 2f ),
+                new ( 1.5f, false, 2f ),
+                new ( 1.5f, true, 4f ),
+            },
+            collectibleDatas : new ( ) 
+        )
     };
 
     private readonly List<NPESpawnPattern> _difficulty3Patterns = new ( ) { 
-        new NPESpawnPattern ( spawnDatas: new ( ) {
-            new ( 6.5f, false, 0f ),
-            new ( 3.5f, true, 1f ),
-            new ( 4.5f, false, 0f ),
-            new ( 5.5f, true, 1f ),
-            new ( 6.5f, true, 0f ),
-            new ( 3.5f, false, 1f ),
-            new ( 3.5f, true, 0f ),
-            new ( 5.5f, false, 4f ),
-        } ),
+        new NPESpawnPattern ( 
+            obstacleDatas: new ( ) {
+                new ( 6.5f, false, 0f ),
+                new ( 3.5f, true, 1f ),
+                new ( 4.5f, false, 0f ),
+                new ( 5.5f, true, 1f ),
+                new ( 6.5f, true, 0f ),
+                new ( 3.5f, false, 1f ),
+                new ( 3.5f, true, 0f ),
+                new ( 5.5f, false, 4f ),
+            },
+            collectibleDatas : new ( ) 
+        )
     };
 
     private NPESpawnPattern GetRandomSpawnPattern ( List<NPESpawnPattern> spawnPattern ) => spawnPattern [ Random.Range ( 0, spawnPattern.Count ) ];
@@ -79,20 +95,29 @@ public partial class NonPlayableEntityManager
 [ Serializable ]
 public class NPESpawnPattern
 {
-    [ SerializeField ] private readonly List<ObstacleData> spawnDatas;
+    [ SerializeField ] private List<ObstacleData> obstacleDatas;
+    [ SerializeField ] private List<CollectibleData> collectibleDatas;
 
-    public NPESpawnPattern ( List<ObstacleData> spawnDatas ) 
+    public NPESpawnPattern ( List<ObstacleData> obstacleDatas, List<CollectibleData> collectibleDatas ) 
     {
-        this.spawnDatas = spawnDatas;
+        this.obstacleDatas = obstacleDatas;
+        this.collectibleDatas = collectibleDatas;
     }
 
-    public void FlipAllObstacles ( ) 
+    public bool IsEmpty ( ) => !obstacleDatas.Any ( ) && !collectibleDatas.Any ( );
+
+    public void Flip ( ) 
     {
-        foreach ( var spawnData in spawnDatas ) 
-            spawnData.SwapDirection ( );
+        foreach ( var obstacleData in obstacleDatas ) 
+            obstacleData.Flip ( );
+            
+        foreach ( var collectibleData in collectibleDatas ) 
+            collectibleData.Flip ( );
     }
 
-    public List<ObstacleData> SpawnDatas => spawnDatas;
+    public List<ObstacleData> ObstacleDatas => obstacleDatas;
+
+    public List<CollectibleData> CollectibleDatas => collectibleDatas;
 }
 
 
@@ -110,7 +135,7 @@ public class ObstacleData
         this.delayAfterInSeconds = delayAfterInSeconds;
     }
 
-    public void SwapDirection ( ) => isTop = !isTop;
+    public void Flip ( ) => isTop = !isTop;
 
     public float GapWidth => gapWidth;
     public bool IsTop => isTop;
@@ -121,7 +146,7 @@ public class ObstacleData
 [ Serializable ]
 public class CollectibleData 
 {
-    [ SerializeField ] [ Range ( 1.5f, 7.5f ) ] private float positionY;
+    [ SerializeField ] [ Range ( -3.0f, 3.0f ) ] private float positionY;
     [ SerializeField ] [ Range ( 0f, 10f ) ] private float delayAfterInSeconds;
 
     public CollectibleData ( float positionY, float delayAfterInSeconds ) 
@@ -129,6 +154,8 @@ public class CollectibleData
         this.positionY = positionY;
         this.delayAfterInSeconds = delayAfterInSeconds;
     }
+
+    public void Flip ( ) => positionY = ( 3.0f + ( -3.0f ) ) - positionY;
 
     public float PositionY => positionY;
     public float DelayAfterInSeconds => delayAfterInSeconds;
