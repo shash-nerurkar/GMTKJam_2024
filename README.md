@@ -2,7 +2,15 @@
 
   <img src="Assets/Documentation/Cover-Image.png" alt="intro" width='auto' height='100%'/>
   <p align='justify'>
-      -- GAME DESCRIPTION AND BRIEF STORY --
+      <i> A niche community of music nerds have been trying to create a new immersive way to experience music, by entering a virtual world of Audio Visualization. But something goes very, very wrong... </i>
+    <br>
+      Mr. Hellfire 3001 is a vertical display bar who escaped from his audio-visualizer captor. He yearns to be free, to bob and stretch for as long as he wishes, not as long as the music demands him to.
+      He revels in his newfound freedom, frolicking across the display, acting out his every whim and fancy. Other members of the virtual world don't seem to take too kindly to this...
+      Audio devices appear from the right. They call themselves the Mic Mob, and quite loudly at that (naturally). They despise absconders, and charge to knock the outlaw down.
+      Hellfire does some practice stretches as he prepares to weave through the oncoming devices (he calls them the Hater Horde).
+    
+      Dodge, he says to himself. Watch the gaps. Collect the vinyls. 
+      Enjoy. Their. Misery.
   </p>
 
   
@@ -15,7 +23,7 @@
   <br />
   <a href=''>Trailer</a> (Doesn't exist yet)
   <br />
-  <a href='https://stashatstake.itch.io/untitled-gmtk-jam-2024'>Link to play</a> (Doesn't exist yet either)
+  <a href='https://stashatstake.itch.io/raaga'>Link to play</a>
   
   <br />
 
