@@ -3,7 +3,7 @@
   <img src="Assets/Documentation/Cover-Image.png" alt="intro" width='auto' height='100%'/>
   <p align='justify'>
       <i> A niche community of music nerds have been trying to create a new immersive way to experience music, by entering a virtual world of Audio Visualization. But something goes very, very wrong... </i>
-    <br>
+    <br /><br />
       Mr. Hellfire 3001 is a vertical display bar who escaped from his audio-visualizer captor. He yearns to be free, to bob and stretch for as long as he wishes, not as long as the music demands him to.
       He revels in his newfound freedom, frolicking across the display, acting out his every whim and fancy. Other members of the virtual world don't seem to take too kindly to this...
       Audio devices appear from the right. They call themselves the Mic Mob, and quite loudly at that (naturally). They despise absconders, and charge to knock the outlaw down.
