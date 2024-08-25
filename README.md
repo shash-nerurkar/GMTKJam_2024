@@ -1,4 +1,4 @@
-# GMTKJam_2024
+# Raaga
 
   <img src="Assets/Documentation/Cover-Image.png" alt="intro" width='auto' height='100%'/>
   <p align='justify'>
