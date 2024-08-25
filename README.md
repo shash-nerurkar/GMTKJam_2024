@@ -11,7 +11,7 @@
           <br /> Hellfire does some practice stretches as he prepares to weave through the oncoming devices (he calls them the Hater Horde).
           <br /><br />
           Dodge, he says to himself. Watch the gaps. Collect the vinyls. 
-          Enjoy. Their. Misery.
+          <br />Enjoy. Their. Misery.
       </i>
   </p>
 
