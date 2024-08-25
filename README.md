@@ -2,7 +2,7 @@
 
   <img src="Assets/Documentation/Cover-Image.png" alt="intro" width='auto' height='100%'/>
   <p align='justify'>
-      <i style="font-size: 20px";> 
+      <i style="font-size: 14px";> 
           A niche community of music nerds have been trying to create a new immersive way to experience music, by entering a virtual world of Audio Visualization. But something goes very, very wrong...
           <br /><br />
           Mr. Hellfire 3001 is a vertical display bar who escaped from his audio-visualizer captor. He yearns to be free, to bob and stretch for as long as he wishes, not as long as the music demands him to.
