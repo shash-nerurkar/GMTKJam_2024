@@ -14,6 +14,15 @@ public static class Constants
     #endregion
 
 
+    #region Animations
+
+    public const string ANIM_TRIGGER_HeartButtonFill = "Fill";
+
+    public const string ANIM_TRIGGER_HeartButtonEmpty = "Empty";
+
+    #endregion
+
+
     #region Themes
 
     public static readonly Color ThemeOrangeColor = new ( 0.9450981f, 0.7490196f, 0.3764706f );
@@ -27,8 +36,6 @@ public static class Constants
 
     public static readonly Vector2 InGameViewportVerticalRange = new ( -2.55f, 4.45f );
 
-    public static bool IsPointYInGameViewport ( float pointY ) => pointY > InGameViewportVerticalRange.x && pointY < InGameViewportVerticalRange.y;
-
     public static readonly Vector2 ObstacleGapWidthRange = new ( 1.5f, 7.5f );
 
     #endregion
@@ -36,7 +43,7 @@ public static class Constants
 
     #region Soundtrack Stingers
 
-    private static readonly Dictionary<MusicType, SoundType [ ]> TrackToStingers = new Dictionary<MusicType, SoundType [ ]> ( ) {
+    public static readonly Dictionary<MusicType, SoundType [ ]> TrackToStingers = new ( ) {
         { MusicType.TrackAtmospheric, new SoundType [ ] { 
             SoundType.Stinger1Atmospheric, SoundType.Stinger2Atmospheric, SoundType.Stinger3Atmospheric 
         } },
@@ -45,12 +52,20 @@ public static class Constants
             SoundType.Stinger4DnB, SoundType.Stinger5DnB, SoundType.Stinger6DnB,
             SoundType.Stinger7DnB, SoundType.Stinger8DnB, SoundType.Stinger9DnB, 
         } },
+        { MusicType.TrackGameplay, new SoundType [ ] { 
+            SoundType.Stinger1DnB, SoundType.Stinger2DnB, SoundType.Stinger3DnB,
+            SoundType.Stinger4DnB, SoundType.Stinger5DnB, SoundType.Stinger6DnB,
+            SoundType.Stinger7DnB, SoundType.Stinger8DnB, SoundType.Stinger9DnB, 
+        } },
+        { MusicType.TrackMenu, new SoundType [ ] { 
+            SoundType.Stinger1DnB, SoundType.Stinger2DnB, SoundType.Stinger3DnB,
+            SoundType.Stinger4DnB, SoundType.Stinger5DnB, SoundType.Stinger6DnB,
+            SoundType.Stinger7DnB, SoundType.Stinger8DnB, SoundType.Stinger9DnB, 
+        } },
     };
 
-    public static SoundType GetStingerTypeByGapWidth ( MusicType trackType, float gapWidth ) 
+    public static SoundType GetStingerTypeByGapWidth ( SoundType [ ] stingers, float gapWidth ) 
     {
-        var stingers = TrackToStingers [ trackType ];
-
         var thresholds = new List<float> { ObstacleGapWidthRange.x };
         for ( var i = 1; i < stingers.Length; i++ ) 
             thresholds.Add ( ObstacleGapWidthRange.x + ( ( ObstacleGapWidthRange.y - ObstacleGapWidthRange.x ) * i / stingers.Length ) );
@@ -99,4 +114,6 @@ public enum MusicType
 {
     TrackAtmospheric,
     TrackDnB,
+    TrackGameplay,
+    TrackMenu,
 }

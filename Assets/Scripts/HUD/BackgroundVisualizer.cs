@@ -35,49 +35,47 @@ public class BackgroundVisualizer : MonoBehaviour
     private void Awake ( ) 
     {
         GameManager.OnGameStartAction += Initialize;
+        GameManager.OnGameEndAction += Clear;
 
-        SoundManager.VisualizeTrackAction += StartTrack;
-        SoundManager.StopVisualizingTrackAction += StopTrack;
-
-        // if ( Application.platform == RuntimePlatform.WebGLPlayer ) 
-        // {
-            barCount = 50;
-            barHeightMultiplier = 110;
-            normalizerCoeff = 15;
-            smoothingValue = 0.07f;
-        // }
+        SoundManager.OnPlayTrackAction += StartTrack;
+        SoundManager.OnStopTrackAction += StopTrack;
     }
 
     private void OnDestroy ( ) 
     {
         GameManager.OnGameStartAction -= Initialize;
+        GameManager.OnGameEndAction -= Clear;
 
-        SoundManager.VisualizeTrackAction -= StartTrack;
-        SoundManager.StopVisualizingTrackAction -= StopTrack;
+        SoundManager.OnPlayTrackAction -= StartTrack;
+        SoundManager.OnStopTrackAction -= StopTrack;
+    }
+
+    private void Start ( ) 
+    { 
+        if ( Application.platform == RuntimePlatform.WebGLPlayer ) 
+        {
+            barCount = 50;
+            barHeightMultiplier = 110;
+            normalizerCoeff = 15;
+            smoothingValue = 0.07f;
+        }
     }
     
     private void Initialize ( ) 
     {
-        _spectrumData = new float [ Mathf.Min ( ( int ) Mathf.Pow ( 2, ( int ) Mathf.Log ( barCount + 1, 2 ) + 1 ), 64 ) ];
         _bars = new RectTransform [ barCount ];
-        _smoothedValues = new float [ barCount ];
-
         for ( var i = 0; i < _bars.Length; i++ ) 
         {
             _bars [ i ] = Instantiate ( barPrefab, transform ).GetComponent<RectTransform> ( );
             _bars [ i ].GetComponent<Image> ( ).color = new Color ( Constants.ThemeOrangeColor.r, Constants.ThemeOrangeColor.g, Constants.ThemeOrangeColor.b, barOpacity / 255.0f );
         }
+        
+        _spectrumData = new float [ Mathf.Max ( ( int ) Mathf.Pow ( 2, ( int ) Mathf.Log ( barCount + 1, 2 ) + 1 ), 64 ) ];
+        _smoothedValues = new float [ barCount ];
     }
 
-    private void StartTrack ( AudioSource track ) 
+    private void Clear ( ) 
     {
-        _currentTrack = track;
-    }
-
-    private void StopTrack ( ) 
-    {
-        _currentTrack = null;
-
         if ( _bars != null ) 
         {
             foreach ( var bar in _bars ) 
@@ -93,14 +91,18 @@ public class BackgroundVisualizer : MonoBehaviour
         _smoothedValues = null;
     }
 
+    private void StartTrack ( Music track ) => _currentTrack = track.Source;
+
+    private void StopTrack ( ) => _currentTrack = null;
+
     private void FixedUpdate ( ) 
     {
         if ( _currentTrack != null ) 
         {
-            // if ( Application.platform == RuntimePlatform.WebGLPlayer ) 
+            if ( Application.platform == RuntimePlatform.WebGLPlayer ) 
                 FillSpectrumDataWithDummyData ( );
-            // else 
-            //     _currentTrack.GetSpectrumData ( _spectrumData, 0, FFTWindow.Blackman );
+            else 
+                _currentTrack.GetSpectrumData ( _spectrumData, 0, FFTWindow.Blackman );
 
             var groupSize = Mathf.FloorToInt ( _spectrumData.Length / _bars.Length );
             for ( var i = 0; i < _bars.Length; i++ ) 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
@@ -7,9 +8,9 @@ public class SoundManager : MonoBehaviour
 {
     #region Actions
 
-    public static event Action<AudioSource> VisualizeTrackAction;
+    public static event Action<Music> OnPlayTrackAction;
 
-    public static event Action StopVisualizingTrackAction;
+    public static event Action OnStopTrackAction;
 
     #endregion
 
@@ -20,8 +21,16 @@ public class SoundManager : MonoBehaviour
 
     [ SerializeField ] private Music [ ] musics;
 
-    public static SoundManager Instance { get { return _instance; } }
+    [ SerializeField ] private MusicType [ ] tracksToPlay;
+
     private static SoundManager _instance;
+    public static SoundManager Instance { get { return _instance; } }
+
+    private int _currentTrackIndex = 0;
+
+    private bool _isLooping;
+
+    private IEnumerator _playNextTrackCoroutine;
 
     #endregion
 
@@ -39,40 +48,83 @@ public class SoundManager : MonoBehaviour
 
         musics.ToList ( ).ForEach ( music => music.Init ( gameObject.AddComponent<AudioSource> ( ) ) );
 
-        GameManager.OnGameStartAction += PlayMusic;
-        GameManager.OnGameEndAction += StopMusic;
+        GameManager.OnGameStartAction += OnGameStart;
+        GameManager.OnGameEndAction += OnGameEnd;
 
-        HUDManager.OnPausePressedAction += PauseMusic;
-        HUDManager.OnResumePressedAction += ResumeMusic;
-        HUDManager.AdjustVolumeAction += AdjustVolume;
+        HUDManager.OnPausePressedAction += OnPauseButtonPressed;
+        HUDManager.OnResumePressedAction += OnResumeButtonPressed;
+
+        HUDManager.OnPreviousTrackPressedAction += OnPreviousTrackButtonPressed;
+        HUDManager.OnNextTrackPressedAction += OnNextTrackButtonPressed;
+
+        HUDManager.OnHeartTrackToggledAction += SetCurrentTrackLikeStatus;
+        HUDManager.OnLoopTrackToggledAction += SetLoopStatus;
+        
+        HUDManager.AdjustMusicVolumeAction += AdjustMusicVolume;
+        HUDManager.AdjustSFXVolumeAction += AdjustSFXVolume;
     }
 
     private void OnDestroy ( ) 
     {
-        GameManager.OnGameStartAction -= PlayMusic;
-        GameManager.OnGameEndAction -= StopMusic;
+        GameManager.OnGameStartAction -= OnGameStart;
+        GameManager.OnGameEndAction -= OnGameEnd;
 
-        HUDManager.OnPausePressedAction -= PauseMusic;
-        HUDManager.OnResumePressedAction -= ResumeMusic;
-        HUDManager.AdjustVolumeAction -= AdjustVolume;
+        HUDManager.OnPausePressedAction -= OnPauseButtonPressed;
+        HUDManager.OnResumePressedAction -= OnResumeButtonPressed;
+        HUDManager.OnPreviousTrackPressedAction -= OnPreviousTrackButtonPressed;
+        HUDManager.OnNextTrackPressedAction -= OnNextTrackButtonPressed;
+
+        HUDManager.OnHeartTrackToggledAction -= SetCurrentTrackLikeStatus;
+        HUDManager.OnLoopTrackToggledAction -= SetLoopStatus;
+
+        HUDManager.AdjustMusicVolumeAction -= AdjustMusicVolume;
+        HUDManager.AdjustSFXVolumeAction -= AdjustSFXVolume;
+        
+        if ( _playNextTrackCoroutine != null ) 
+            StopCoroutine ( _playNextTrackCoroutine );
     }
 
-    private void AdjustVolume ( float fraction ) 
+    private void OnGameStart ( ) => PlayMusic ( );
+
+    private void OnGameEnd ( ) => StopMusic ( );
+
+    private void OnPauseButtonPressed ( ) => musics.ToList ( ).ForEach ( music => music.Source.pitch = 0 );
+
+    private void OnResumeButtonPressed ( ) => DOVirtual.DelayedCall ( 0.25f, ( ) => musics.ToList ( ).ForEach ( music => music.Source.pitch = 1 ) );
+
+    private void OnPreviousTrackButtonPressed ( ) 
     {
-        foreach ( var sound in sounds ) 
-            sound.AdjustVolume ( fraction );
-            
-        foreach ( var music in musics ) 
-            music.AdjustVolume ( fraction );
+        if ( _playNextTrackCoroutine != null ) 
+            StopCoroutine ( _playNextTrackCoroutine );
+        
+        PlayPreviousTrack ( );
     }
+
+    private void OnNextTrackButtonPressed ( ) 
+    {
+        if ( _playNextTrackCoroutine != null ) 
+            StopCoroutine ( _playNextTrackCoroutine );
+        
+        _playNextTrackCoroutine = PlayNextTrack ( overrideLooping: true );
+        StartCoroutine ( _playNextTrackCoroutine );
+    }
+
+    private void SetCurrentTrackLikeStatus ( bool likeStatus ) => Array.Find ( musics, m => m.Type == tracksToPlay [ _currentTrackIndex ] ).SetLikeStatus ( likeStatus );
+
+    private void SetLoopStatus ( bool loopStatus ) => _isLooping = loopStatus;
+
+    private void AdjustMusicVolume ( float fraction ) => musics.ToList ( ).ForEach ( music => music.AdjustVolumeScale ( fraction ) );
+
+    private void AdjustSFXVolume ( float fraction ) => sounds.ToList ( ).ForEach ( sound => sound.AdjustVolumeScale ( fraction ) );
 
 
     #region Sound
 
-    public void Play ( SoundType type ) 
+    public void Play ( SoundType type, bool stopOthers = false ) 
     {
-        foreach ( var sound in sounds.Where ( s => s.IsPlaying ) ) 
-            sound.Stop ( );
+        if ( stopOthers ) 
+            foreach ( var sound in sounds.Where ( s => s.IsPlaying ) ) 
+                sound.Stop ( );
 
         Array.Find ( sounds, s => s.Type == type )?.Play ( );
     }
@@ -84,36 +136,66 @@ public class SoundManager : MonoBehaviour
     
     #region Music
 
-    private void PlayMusic ( ) 
+    private void PlayMusic ( float fadeInTimeInSeconds = 0 ) 
     {
-        Play ( MusicType.TrackDnB );
-        
-        VisualizeTrackAction?.Invoke ( GetTrackSource ( MusicType.TrackDnB ) );
+        var currentTrack = Array.Find ( musics, m => m.Type == tracksToPlay [ _currentTrackIndex ] );
+
+        currentTrack.Play ( fadeInTimeInSeconds );
+
+        OnPlayTrackAction?.Invoke ( currentTrack );
+
+        _playNextTrackCoroutine = PlayNextTrack ( currentTrack.Source.clip.length / currentTrack.Pitch, 2f / currentTrack.Pitch );
+        StartCoroutine ( _playNextTrackCoroutine );
     }
 
-    private void StopMusic ( ) 
+    private void StopMusic ( float fadeOutTimeInSeconds = 0 ) 
     {
-        Stop ( MusicType.TrackDnB );
-
         foreach ( var sound in sounds.Where ( s => s.IsPlaying && s.Type != SoundType.PlayerHitObstacle ) ) 
             sound.Stop ( );
+            
+        var currentTrack = Array.Find ( musics, m => m.Type == tracksToPlay [ _currentTrackIndex ] );
 
-        StopVisualizingTrackAction?.Invoke ( );
+        currentTrack.Stop ( fadeOutTimeInSeconds, ( ) => OnStopTrackAction?.Invoke ( ) );
     }
 
-    private void PauseMusic ( ) => Pause ( MusicType.TrackDnB );
+    private void PlayPreviousTrack ( ) 
+    { 
+        var currentTrack = Array.Find ( musics, m => m.Type == tracksToPlay [ _currentTrackIndex ] );
+        
+        var newTrackIndex = currentTrack.Source.time > 2f 
+                                    ? _currentTrackIndex 
+                                    : ( _currentTrackIndex == 0 ? tracksToPlay.Length : _currentTrackIndex ) - 1;
+        
+        StopMusic ( );
+        
+        _currentTrackIndex = newTrackIndex;
+        
+        PlayMusic ( );
+    }
 
-    private void ResumeMusic ( ) => DOVirtual.DelayedCall ( 0.25f, ( ) => Resume ( MusicType.TrackDnB ) );
+    private IEnumerator PlayNextTrack ( float delayInSeconds = 0, float fadeTimeInSeconds = 0, bool overrideLooping = false ) 
+    { 
+        yield return new WaitForSeconds ( Mathf.Max ( 0, delayInSeconds - fadeTimeInSeconds ) );
 
-    private void Play ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.FadeInPlay ( );
+        int newTrackIndex;
+        if ( _isLooping && !overrideLooping ) 
+        {
+            newTrackIndex = _currentTrackIndex;
+            fadeTimeInSeconds = 0;
+        }
+        else 
+        {
+            newTrackIndex = ( _currentTrackIndex == tracksToPlay.Length - 1 ? -1 : _currentTrackIndex ) + 1;
+        }
 
-    private void Resume ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Play ( );
+        StopMusic ( fadeTimeInSeconds );
 
-    private void Stop ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Stop ( );
-
-    private void Pause ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Pause ( );
-
-    private AudioSource GetTrackSource ( MusicType type ) => Array.Find ( musics, m => m.Type == type )?.Source;
+        yield return new WaitForSeconds ( fadeTimeInSeconds );
+        
+        _currentTrackIndex = newTrackIndex;
+        
+        PlayMusic ( fadeTimeInSeconds );
+    }
 
     #endregion
 

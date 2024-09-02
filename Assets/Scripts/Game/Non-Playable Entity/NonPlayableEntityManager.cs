@@ -35,6 +35,8 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         }
     );
 
+    private SoundType [ ] currentTrackStingers;
+    
     private IEnumerator _spawnNPEsCoroutine;
 
     private IEnumerator _spawnObstaclesCoroutine;
@@ -64,6 +66,8 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         GameManager.OnGameEndAction += EndGame;
 
         Collectible.OnPlayerHitAction += OnCollectibleCollected;
+
+        SoundManager.OnPlayTrackAction += SetCurrentStingerList;
     }
 
     private void OnDestroy ( ) 
@@ -72,6 +76,8 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         GameManager.OnGameEndAction -= EndGame;
 
         Collectible.OnPlayerHitAction -= OnCollectibleCollected;
+
+        SoundManager.OnPlayTrackAction -= SetCurrentStingerList;
         
         if ( _spawnNPEsCoroutine != null ) 
             StopCoroutine ( _spawnNPEsCoroutine );
@@ -122,6 +128,8 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         _currentCollectibleSpawnCount = 0;
     }
 
+    private void SetCurrentStingerList ( Music track ) => currentTrackStingers = Constants.TrackToStingers [ track.Type ];
+
     private void OnCollectibleCollected ( ) 
     {
         ++_currentCollectibleCollectedCount;
@@ -161,7 +169,7 @@ public partial class NonPlayableEntityManager : MonoBehaviour
             foreach ( var obstacleData in pattern.ObstacleDatas ) 
             {
                 Instantiate ( obstaclePrefab, transform ).GetComponent<Obstacle> ( ) 
-                    .Initialize ( obstacleData.GapWidth, obstacleData.IsTop, currentNPEMoveSpeed, currentNPELifeTime );
+                    .Initialize ( obstacleData.GapWidth, obstacleData.IsTop, currentNPEMoveSpeed, currentNPELifeTime, Constants.GetStingerTypeByGapWidth ( currentTrackStingers, obstacleData.GapWidth ) );
 
                 yield return new WaitForSeconds ( obstacleData.DelayAfterInSeconds );
             }
@@ -250,8 +258,6 @@ public partial class NonPlayableEntityManager : MonoBehaviour
         {
             _currentNPESpeedScale = Mathf.Min ( _currentNPESpeedScale + initialScaleIncrement, NPEMaxSpeedScale );
             ++_timeElapsedInSeconds;
-
-            Debug.Log ( _currentNPESpeedScale );
             
             yield return new WaitForSeconds ( 1 );
         }

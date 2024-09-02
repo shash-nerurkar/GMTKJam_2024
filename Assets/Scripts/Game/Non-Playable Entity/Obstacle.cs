@@ -28,14 +28,14 @@ public class Obstacle : MonoBehaviour
 
     #region Methods
 
-    public void Initialize ( float gapWidth, bool isTop, float moveSpeed, float lifeTime ) 
+    public void Initialize ( float gapWidth, bool isTop, float moveSpeed, float lifeTime, SoundType stingerType ) 
     {
         transform.SetLocalPositionAndRotation ( 
             new Vector3 ( 0, isTop ? gapWidth : -gapWidth, 0 ), 
             Quaternion.Euler ( 0, 0, isTop ? 180 : 0 )
         );
 
-        _stingerType = Constants.GetStingerTypeByGapWidth ( MusicType.TrackDnB, gapWidth );
+        _stingerType = stingerType;
         
         rb.velocity = new Vector2 ( -moveSpeed, 0f );
         Destroy ( gameObject, lifeTime );
@@ -51,13 +51,9 @@ public class Obstacle : MonoBehaviour
 
     private void OnPlayerDetected ( Player player ) 
     {
-        SoundManager.Instance.Play ( _stingerType );
+        SoundManager.Instance.Play ( _stingerType, true );
 
         flareEffect.SetActive ( true );
-        DOVirtual.DelayedCall ( 2f, ( ) => { 
-            if ( flareEffect != null ) 
-                flareEffect.SetActive ( false );
-        } );
     }
 
     #endregion

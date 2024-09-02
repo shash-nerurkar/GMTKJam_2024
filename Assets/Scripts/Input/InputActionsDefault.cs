@@ -26,6 +26,34 @@ namespace InputCustom
     ""name"": ""InputActionsDefault"",
     ""maps"": [
         {
+            ""name"": ""Global"",
+            ""id"": ""94a8b5de-bdd5-420e-aa6f-ea30a1d80fff"",
+            ""actions"": [
+                {
+                    ""name"": ""ToggleGameState"",
+                    ""type"": ""Button"",
+                    ""id"": ""3eeed775-5465-459c-9b8d-48207a906806"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""d278510c-1954-488c-83f6-43bc70692c59"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleGameState"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""InGame"",
             ""id"": ""ca76cf3d-c6b3-4c3f-9aee-7083f718fcee"",
             ""actions"": [
@@ -153,6 +181,9 @@ namespace InputCustom
     ],
     ""controlSchemes"": []
 }");
+            // Global
+            m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
+            m_Global_ToggleGameState = m_Global.FindAction("ToggleGameState", throwIfNotFound: true);
             // InGame
             m_InGame = asset.FindActionMap("InGame", throwIfNotFound: true);
             m_InGame_SetScaleSide = m_InGame.FindAction("SetScaleSide", throwIfNotFound: true);
@@ -215,6 +246,52 @@ namespace InputCustom
             return asset.FindBinding(bindingMask, out action);
         }
 
+        // Global
+        private readonly InputActionMap m_Global;
+        private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
+        private readonly InputAction m_Global_ToggleGameState;
+        public struct GlobalActions
+        {
+            private @InputActionsDefault m_Wrapper;
+            public GlobalActions(@InputActionsDefault wrapper) { m_Wrapper = wrapper; }
+            public InputAction @ToggleGameState => m_Wrapper.m_Global_ToggleGameState;
+            public InputActionMap Get() { return m_Wrapper.m_Global; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(GlobalActions set) { return set.Get(); }
+            public void AddCallbacks(IGlobalActions instance)
+            {
+                if (instance == null || m_Wrapper.m_GlobalActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_GlobalActionsCallbackInterfaces.Add(instance);
+                @ToggleGameState.started += instance.OnToggleGameState;
+                @ToggleGameState.performed += instance.OnToggleGameState;
+                @ToggleGameState.canceled += instance.OnToggleGameState;
+            }
+
+            private void UnregisterCallbacks(IGlobalActions instance)
+            {
+                @ToggleGameState.started -= instance.OnToggleGameState;
+                @ToggleGameState.performed -= instance.OnToggleGameState;
+                @ToggleGameState.canceled -= instance.OnToggleGameState;
+            }
+
+            public void RemoveCallbacks(IGlobalActions instance)
+            {
+                if (m_Wrapper.m_GlobalActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IGlobalActions instance)
+            {
+                foreach (var item in m_Wrapper.m_GlobalActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_GlobalActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public GlobalActions @Global => new GlobalActions(this);
+
         // InGame
         private readonly InputActionMap m_InGame;
         private List<IInGameActions> m_InGameActionsCallbackInterfaces = new List<IInGameActions>();
@@ -268,6 +345,10 @@ namespace InputCustom
             }
         }
         public InGameActions @InGame => new InGameActions(this);
+        public interface IGlobalActions
+        {
+            void OnToggleGameState(InputAction.CallbackContext context);
+        }
         public interface IInGameActions
         {
             void OnSetScaleSide(InputAction.CallbackContext context);

@@ -141,8 +141,23 @@ MonoBehaviour:
     pitch: 1
     isLoop: 1
     type: 0
+    name: DOOM (ft. BravoDS) - StashAtStake
   - clip: {fileID: 8300000, guid: 50f7d322d3b13ae4d95b4af1e496b96b, type: 3}
     volume: 0.75
     pitch: 1
     isLoop: 1
     type: 1
+    name: Intergalactic dance-off (ft. SnR) - BravoDS
+  - clip: {fileID: 8300000, guid: e4de3fec78672f942a50eee8e63cc35c, type: 3}
+    volume: 0.75
+    pitch: 1
+    isLoop: 1
+    type: 2
+    name: Go-getter Anthem - RobinDaHood
+  - clip: {fileID: 8300000, guid: 6f43c6809b59dea4993138d9d1fbb096, type: 3}
+    volume: 0.75
+    pitch: 1
+    isLoop: 1
+    type: 3
+    name: At Winter's end - BravoDS
+  tracksToPlay: 010000000200000003000000

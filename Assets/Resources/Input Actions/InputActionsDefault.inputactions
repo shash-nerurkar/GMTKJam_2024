@@ -2,6 +2,34 @@
     "name": "InputActionsDefault",
     "maps": [
         {
+            "name": "Global",
+            "id": "94a8b5de-bdd5-420e-aa6f-ea30a1d80fff",
+            "actions": [
+                {
+                    "name": "ToggleGameState",
+                    "type": "Button",
+                    "id": "3eeed775-5465-459c-9b8d-48207a906806",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d278510c-1954-488c-83f6-43bc70692c59",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleGameState",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "InGame",
             "id": "ca76cf3d-c6b3-4c3f-9aee-7083f718fcee",
             "actions": [

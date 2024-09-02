@@ -6,6 +6,8 @@ public class InputManager : MonoBehaviour
 {
     #region Action
 
+    public static event Action ToggleGameStateAction;
+
     public static event Action<int> ScaleSideSelectedAction;
 
     public static event Action ScaleSideUnselectedAction;
@@ -33,6 +35,8 @@ public class InputManager : MonoBehaviour
 
         HUDManager.OnResumePressedAction += EnableInGameActions;
         HUDManager.OnPausePressedAction += OnPausePressedAction;
+
+        _inputActionsDefault.Global.Enable ( );
     }
 
     private void OnDestroy ( ) 
@@ -61,6 +65,8 @@ public class InputManager : MonoBehaviour
 
     private void Start ( ) 
     {
+        _inputActionsDefault.Global.ToggleGameState.started += ctx => ToggleGameStateAction?.Invoke ( );
+
         _inputActionsDefault.InGame.SetScaleSide.started += ctx => ScaleSideSelectedAction?.Invoke ( ( int ) ctx.ReadValue<float> ( ) );
         _inputActionsDefault.InGame.SetScaleSide.canceled += ctx => ScaleSideUnselectedAction?.Invoke ( );
     }
