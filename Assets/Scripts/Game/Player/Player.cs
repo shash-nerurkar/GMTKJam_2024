@@ -9,9 +9,11 @@ public class Player : MonoBehaviour
     
     #region Serialized
 
-    [ SerializeField ] private SpriteRenderer spriteRenderer;
+    [ Header ( "Body" ) ]
 
-    [ Header ( "Expressions" ) ]
+    [ SerializeField ] private SpriteRenderer bodySpriteRenderer;
+
+    [ Header ( "Expression" ) ]
 
     [ SerializeField ] private SpriteRenderer faceSpriteRenderer;
 
@@ -37,6 +39,8 @@ public class Player : MonoBehaviour
 
 
     private Vector3 _basePosition;
+    
+    private Vector3 _bodySpriteBaseSize;
 
     private float _currentScaleSensitivity = 1;
 
@@ -66,8 +70,6 @@ public class Player : MonoBehaviour
         Collectible.OnPlayerHitAction += Collect;
 
         HUDManager.AdjustSensitivityAction += AdjustScaleSensitivity;
-
-        _basePosition = transform.position;
     }
 
     private void OnDestroy ( ) 
@@ -83,15 +85,26 @@ public class Player : MonoBehaviour
         Collectible.OnPlayerHitAction -= Collect;
 
         HUDManager.AdjustSensitivityAction -= AdjustScaleSensitivity;
+        
+        _scaleTweenSequence.Kill ( );
+        _scaleExpressionTween.Kill ( );
+    }
+
+    private void Start ( ) 
+    {
+        _basePosition = transform.position;
+        _bodySpriteBaseSize = bodySpriteRenderer.size;
     }
 
     private void Initialize ( ) 
     {
         transform.position = _basePosition;
+        bodySpriteRenderer.size = _bodySpriteBaseSize;
 
         faceSpriteRenderer.sprite = expressionBaseSprite;
 
         transform.localScale = Vector3.one;
+        bodySpriteRenderer.transform.localScale = Vector3.one;
         peripheralsTopPivotTransform.localScale = Vector3.one;
         peripheralsBottomPivotTransform.localScale = Vector3.one;
     }
@@ -112,12 +125,6 @@ public class Player : MonoBehaviour
     }
 
     private void AdjustScaleSensitivity ( float fraction ) => _currentScaleSensitivity = fraction;
-
-    private void RemoveSideToScale ( ) 
-    {
-        edgeIndicatorTop.SetActive ( false );
-        edgeIndicatorBottom.SetActive ( false );
-    }
 
     private void SetSideToScale ( int sideToScale ) 
     {
@@ -145,6 +152,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void RemoveSideToScale ( ) 
+    {
+        edgeIndicatorTop.SetActive ( false );
+        edgeIndicatorBottom.SetActive ( false );
+    }
+
     public void Scale ( int sideToScale, int scaleValue ) 
     {
         // CALCULATE OFFSET
@@ -153,57 +166,49 @@ public class Player : MonoBehaviour
         var scaleDirection = Math.Sign ( scaleValue );
         var initialScaleFlip = Math.Sign ( initialScale.y );
 
-        var scaleOffsetY = _currentScaleSensitivity * 1f * ( sideToScale != scaleDirection ? -1 : 1 );
-        var isNewScaleTooLess = Mathf.Abs ( initialScale.y + scaleOffsetY ) < 1;
-
-        float newScaleY;
+        float scaleOffsetY = _currentScaleSensitivity * 1f * ( sideToScale != scaleDirection ? -1 : 1 );
         float positionOffsetY;
-        if ( isNewScaleTooLess && Mathf.Abs ( initialScale.y ) == 1 ) 
+
+        var isNewScaleTooLess = Mathf.Abs ( initialScale.y + scaleOffsetY ) < 1;
+        var isFlipping = isNewScaleTooLess && Mathf.Abs ( initialScale.y ) == 1;
+        if ( isFlipping ) 
         {
-            newScaleY = initialScale.y * -1f;
+            scaleOffsetY = initialScale.y * -2f;
             positionOffsetY = 0;
         }
         else 
         {
             if ( isNewScaleTooLess ) 
                 scaleOffsetY = ( 1 - Mathf.Abs ( initialScale.y ) ) * initialScaleFlip;
-
-            newScaleY = initialScale.y + scaleOffsetY;
-            positionOffsetY = scaleOffsetY / 2.0F * sideToScale;
+            
+            positionOffsetY = scaleOffsetY / 2 * sideToScale;
         }
-
-        _currentDestinationScale = new Vector3 ( initialScale.x, newScaleY );
+        
+        _currentDestinationScale = new Vector3 ( initialScale.x, initialScale.y + scaleOffsetY );
         _currentDestinationPosition = new Vector3 ( initialPosition.x, initialPosition.y + positionOffsetY );
         
-
-
+        
+        
         // IF OFFSET IS SENDING PLAYER OUT-OF-BOUNDS, ADJUST IT
         var isSideFacingAwayFromScaleDirection = 
-                    ( sideToScale == -1 && initialScaleFlip ==  1 && scaleDirection ==  1 ) || 
-                    ( sideToScale ==  1 && initialScaleFlip ==  1 && scaleDirection == -1 ) || 
-                    ( sideToScale == -1 && initialScaleFlip == -1 && scaleDirection == -1 ) || 
-                    ( sideToScale ==  1 && initialScaleFlip == -1 && scaleDirection ==  1 );
-
-        transform.localScale = _currentDestinationScale;
-        transform.position = _currentDestinationPosition;
-
-        var newBottomLeftY = spriteRenderer.bounds.min.y;
-        var newTopRightY = spriteRenderer.bounds.max.y;
-
-        transform.localScale = initialScale;
-        transform.position = initialPosition;
+            ( sideToScale == -1 && initialScaleFlip ==  1 && scaleDirection ==  1 ) || 
+            ( sideToScale ==  1 && initialScaleFlip ==  1 && scaleDirection == -1 ) || 
+            ( sideToScale == -1 && initialScaleFlip == -1 && scaleDirection == -1 ) || 
+            ( sideToScale ==  1 && initialScaleFlip == -1 && scaleDirection ==  1 );
+        
+        CalculateAdjustedBounds ( _currentDestinationScale, _currentDestinationPosition, out float newBoundsMinY, out float newBoundsMaxY );
 
         if ( !isSideFacingAwayFromScaleDirection ) 
         {
-            if ( newBottomLeftY < Constants.InGameViewportVerticalRange.x ) 
+            if ( newBoundsMinY < Constants.InGameViewportVerticalRange.x ) 
             {
                 _currentDestinationScale = initialScale;
-                _currentDestinationPosition = initialPosition + new Vector3 ( 0, Constants.InGameViewportVerticalRange.x - spriteRenderer.bounds.min.y, 0 );
+                _currentDestinationPosition = initialPosition + new Vector3 ( 0, Constants.InGameViewportVerticalRange.x - bodySpriteRenderer.bounds.min.y, 0 );
             }
-            else if ( newTopRightY > Constants.InGameViewportVerticalRange.y ) 
+            else if ( newBoundsMaxY > Constants.InGameViewportVerticalRange.y ) 
             {
                 _currentDestinationScale = initialScale;
-                _currentDestinationPosition = initialPosition + new Vector3 ( 0, Constants.InGameViewportVerticalRange.y - spriteRenderer.bounds.max.y, 0 );
+                _currentDestinationPosition = initialPosition + new Vector3 ( 0, Constants.InGameViewportVerticalRange.y - bodySpriteRenderer.bounds.max.y, 0 );
             }
         }
 
@@ -216,18 +221,43 @@ public class Player : MonoBehaviour
         _scaleTweenSequence = DOTween.Sequence ( );
         var sequenceSpeed = 0.05f;
         
+        var peripheralsScale = new Vector2 ( 1 / initialScale.x, Mathf.Abs ( 1 / _currentDestinationScale.y ) );
+        
         _scaleTweenSequence.Join ( transform.DOScale ( _currentDestinationScale, sequenceSpeed ) );
         _scaleTweenSequence.Join ( transform.DOMove ( _currentDestinationPosition, sequenceSpeed ) );
-        _scaleTweenSequence.Join ( peripheralsTopPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / _currentDestinationScale.y ) ), sequenceSpeed ) );
-        _scaleTweenSequence.Join ( peripheralsBottomPivotTransform.DOScale ( new Vector3 ( 1 / initialScale.x, Mathf.Abs ( 1 / _currentDestinationScale.y ) ), sequenceSpeed ) );
+        _scaleTweenSequence.Join ( DOTween.To ( ( ) => bodySpriteRenderer.size, x => bodySpriteRenderer.size = x, ( Vector2 ) _currentDestinationScale * _bodySpriteBaseSize, sequenceSpeed ) );
+
+        _scaleTweenSequence.Join ( bodySpriteRenderer.transform.DOScale ( peripheralsScale, sequenceSpeed ) );
+        _scaleTweenSequence.Join ( peripheralsTopPivotTransform.DOScale ( peripheralsScale, sequenceSpeed ) );
+        _scaleTweenSequence.Join ( peripheralsBottomPivotTransform.DOScale ( peripheralsScale, sequenceSpeed ) );
 
         _scaleTweenSequence.Play ( );
 
+
+
+        // CHANGE EXPRESSION
         if ( _scaleExpressionTween.IsActive ( ) ) 
             _scaleExpressionTween.Kill ( );
         
         faceSpriteRenderer.sprite = expressionStretchSprite;
         _scaleExpressionTween = DOVirtual.DelayedCall ( 0.5f, ( ) => faceSpriteRenderer.sprite = expressionBaseSprite );
+
+        return;
+
+        
+        void CalculateAdjustedBounds ( Vector3 newScale, Vector3 newPosition, out float newMinY, out float newMaxY ) 
+        {
+            var scaleFactor = new Vector3 ( newScale.x / initialScale.x, newScale.y / initialScale.y );
+
+            var newSize = Vector3.Scale ( bodySpriteRenderer.bounds.size, scaleFactor );
+            var newCenter = newPosition + Vector3.Scale ( bodySpriteRenderer.bounds.center - initialPosition, scaleFactor );
+
+            var oneY = newCenter.y - newSize.y / 2f;
+            var twoY = newCenter.y + newSize.y / 2f;
+
+            newMinY = Mathf.Min ( oneY, twoY );
+            newMaxY = Mathf.Max ( oneY, twoY );
+        }
     }
 
     #endregion
